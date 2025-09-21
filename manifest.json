@@ -1,0 +1,80 @@
+{
+  "name": "Avela - Restaurant Layout Designer",
+  "short_name": "Avela Designer",
+  "description": "Professional restaurant layout designer with drag-and-drop furniture, rotation tools, and mobile compatibility",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
+  "orientation": "any",
+  "categories": ["productivity", "design", "business"],
+  "lang": "en",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiNmNWY1ZjUiIHN0cm9rZT0iIzg0N2M0YyIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxyZWN0IHg9IjEwIiB5PSIyMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8cmVjdCB4PSIxMCIgeT0iMTIiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8Y2lyY2xlIGN4PSIyMCIgY3k9IjE2IiByPSI0IiBmaWxsPSIjZGYyNDI0Ii8+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMTY1MzM2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BdmVsYTwvdGV4dD4KPC9zdmc+",
+      "sizes": "40x40",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjkwIiBjeT0iOTAiIHI9IjgxIiBmaWxsPSIjZjVmNWY1IiBzdHJva2U9IiM4NDdjNGMiIHN0cm9rZS13aWR0aD0iOSIgb3BhY2l0eT0iMC44Ii8+CjxyZWN0IHg9IjQ1IiB5PSI5MCIgd2lkdGg9IjkwIiBoZWlnaHQ9IjQ1IiBmaWxsPSIjNGI1NTYzIiByeD0iOSIgZmlsbC1vcGFjaXR5PSIwLjgiLz4KPHJlY3QgeD0iNDUiIHk9IjU0IiB3aWR0aD0iOTAiIGhlaWdodD0iMzYiIGZpbGw9IiM0YjU1NjMiIHJ4PSI5IiBmaWxsLW9wYWNpdHk9IjAuOCIvPgo8Y2lyY2xlIGN4PSI5MCIgY3k9IjcyIiByPSIyNCIgZmlsbD0iI2RmMjQyNCIgZmlsbC1vcGFjaXR5PSIwLjkiLz4KPHRleHQgeD0iOTAiIHk9IjE1OCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjU4IiBmaWxsPSIjMTY1MzM2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsLW9wYWNpdHk9IjAuNyI+QXZlbGE8L3RleHQ+Cjwvc3ZnPg==",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9Ijk2IiBjeT0iOTYiIHI9Ijg2IiBmaWxsPSIjZjVmNWY1IiBzdHJva2U9IiM4NDdjNGMiIHN0cm9rZS13aWR0aD0iMTAiIG9wYWNpdHk9IjAuOCIvPgo8cmVjdCB4PSI0OCIgeT0iOTYiIHdpZHRoPSI5NiIgaGVpZ2h0PSI0OCIgZmlsbD0iIzRiNTU2MyIgcng9IjEwIiBmaWxsLW9wYWNpdHk9IjAuOCIvPgo8cmVjdCB4PSI0OCIgeT0iNTciIHdpZHRoPSI5NiIgaGVpZ2h0PSI0MCIgZmlsbD0iIzRiNTU2MyIgcng9IjEwIiBmaWxsLW9wYWNpdHk9IjAuOCIvPgo8Y2lyY2xlIGN4PSI5NiIgY3k9Ijc3IiByPSIyNCIgZmlsbD0iI2RmMjQyNCIgZmlsbC1vcGFjaXR5PSIwLjkiLz4KPHRleHQgeD0iOTYiIHk9IjE2OCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjY0IiBmaWxsPSIjMTY1MzM2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsLW9wYWNpdHk9IjAuNyI+QXZlbGE8L3RleHQ+Cjwvc3ZnPg==",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMjMwIiBmaWxsPSIjZjVmNWY1IiBzdHJva2U9IiM4NDdjNGMiIHN0cm9rZS13aWR0aD0iMjYiIG9wYWNpdHk9IjAuOCIvPgo8cmVjdCB4PSIxMjgiIHk9IjI1NiIgd2lkdGg9IjI1NiIgaGVpZ2h0PSIxMjgiIGZpbGw9IiM0YjU1NjMiIHJ4PSIyNiIgZmlsbC1vcGFjaXR5PSIwLjgiLz4KPHJlY3QgeD0iMTI4IiB5PSIxNTEiIHdpZHRoPSIyNTYiIGhlaWdodD0iMTA1IiBmaWxsPSIjNGI1NTYzIiByeD0iMjYiIGZpbGwtb3BhY2l0eT0iMC44Ii8+CjxjaXJjbGUgY3g9IjI1NiIgY3k9IjIwMyIgcj0iNjQiIGZpbGw9IiNkZjI0MjQiIGZpbGwtb3BhY2l0eT0iMC45Ii8+Cjx0ZXh0IHg9IjI1NiIgeT0iNDQ1IiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYwIiBmaWxsPSIjMTY1MzM2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsLW9wYWNpdHk9IjAuNyI+QXZlbGE8L3RleHQ+Cjwvc3ZnPg==",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTQwIiBoZWlnaHQ9IjM2MCIgdmlld0JveD0iMCAwIDU0MCAzNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1NDAiIGhlaWdodD0iMzYwIiBmaWxsPSIjMGYxNzJhIi8+CjxyZWN0IHg9IjIwIiB5PSIyMCIgd2lkdGg9IjUwMCIgaGVpZ2h0PSIzMjAiIGZpbGw9InJnYmEoMTUsIDIzLDQyLDAuOSkiIHJ4PSIxNiIvPgo8dGV4dCB4PSIyNzAiIHk9IjUwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BdmVsYSBSZXN0YXVyYW50IExheW91dCBEZXNpZ25lcjwvdGV4dD4KPHRleHQgeD0iMjcwIiB5PSI4MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNjYmQ1ZTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk1vYmlsZSBBcHAgVmVyc2lvbjwvdGV4dD4KPC9zdmc+",
+      "sizes": "540x360",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyMCIgaGVpZ2h0PSIxMDgwIiB2aWV3Qm94PSIwIDAgMTkyMCAxMDgwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTkyMCIgaGVpZ2h0PSIxMDgwIiBmaWxsPSIjMGYxNzJhIi8+CjxyZWN0IHg9IjE2MCIgeT0iNjAiIHdpZHRoPSIxNjAwIiBoZWlnaHQ9Ijk2MCIgZmlsbD0icmdiYSgxNSwgMjMsNDIsMC45KSIgcng9IjMyIi8+Cjx0ZXh0IHg9Ijk2MCIgeT0iMTIwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BdmVsYSBSZXN0YXVyYW50IExheW91dCBEZXNpZ25lcjwvdGV4dD4KPHRleHQgeD0iOTYwIiB5PSIxODAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjY2JkNWUxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5Qcm9mZXNzaW9uYWwgUmVzdGF1cmFudCBQbGFubmluZyBUb29sPC90ZXh0Pgo8L3N2Zz4=",
+      "sizes": "1920x1080",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Layout",
+      "short_name": "New",
+      "description": "Create a new restaurant layout",
+      "url": "/?action=new",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiNmNWY1ZjUiIHN0cm9rZT0iIzNiODJmNiIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxyZWN0IHg9IjEwIiB5PSIyMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjM2I4MmY2IiByeD0iMiIvPgo8cmVjdCB4PSIxMCIgeT0iMTIiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiBmaWxsPSIjM2I4MmY2IiByeD0iMiIvPgo8Y2lyY2xlIGN4PSIyMCIgY3k9IjE2IiByPSI0IiBmaWxsPSIjM2I4MmY2Ii8+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjM2I4MmY2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BdmVsYTwvdGV4dD4KPC9zdmc+",
+          "sizes": "40x40",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Load Layout",
+      "short_name": "Load",
+      "description": "Load a saved restaurant layout",
+      "url": "/?action=load",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiNmNWY1ZjUiIHN0cm9rZT0iIzIyYzU1ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxyZWN0IHg9IjEwIiB5PSIyMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjMjJjNTVlIiByeD0iMiIvPgo8cmVjdCB4PSIxMCIgeT0iMTIiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiBmaWxsPSIjMjJjNTVlIiByeD0iMiIvPgo8Y2lyY2xlIGN4PSIyMCIgY3k9IjE2IiByPSI0IiBmaWxsPSIjMjJjNTVlIi8+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMjJjNTVlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BdmVsYTwvdGV4dD4KPC9zdmc+",
+          "sizes": "40x40",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}

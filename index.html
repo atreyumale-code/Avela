@@ -3,7 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#3b82f6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Avela Designer">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-TileColor" content="#3b82f6">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+
+  <!-- PWA Description -->
+  <meta name="description" content="Professional restaurant layout designer with drag-and-drop furniture, rotation tools, and mobile compatibility">
+  <meta name="keywords" content="restaurant, layout, designer, furniture, tables, chairs, planning, mobile, PWA">
+  <meta name="author" content="Avela">
+
   <title>Avela - Restaurant Layout Designer</title>
+  <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiNmNWY1ZjUiIHN0cm9rZT0iIzg0N2M0YyIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxyZWN0IHg9IjEwIiB5PSIyMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8cmVjdCB4PSIxMCIgeT0iMTIiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8Y2lyY2xlIGN4PSIyMCIgY3k9IjE2IiByPSI0IiBmaWxsPSIjZGYyNDI0Ii8+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMTY1MzM2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BdmVsYTwvdGV4dD4KPC9zdmc+">
   <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiNmNWY1ZjUiIHN0cm9rZT0iIzg0N2M0YyIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxyZWN0IHg9IjEwIiB5PSIyMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8cmVjdCB4PSIxMCIgeT0iMTIiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8Y2lyY2xlIGN4PSIyMCIgY3k=">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -432,6 +448,284 @@
         height: 80px;
       }
     }
+
+    /* PWA and Mobile Enhancements */
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+      touch-action: manipulation;
+    }
+
+    .mobile-optimized {
+      -webkit-tap-highlight-color: rgba(59, 130, 246, 0.2);
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* Enhanced touch feedback */
+    .btn:active, .pill:active, .object-btn:active {
+      transform: scale(0.95);
+      transition: transform 0.1s ease;
+    }
+
+    /* Mobile-specific layout improvements */
+    @media (max-width: 1024px) {
+      .canvas-wrap {
+        height: calc(100vh - 180px) !important;
+        margin: 8px;
+      }
+
+      .sidebar {
+        width: 280px;
+      }
+
+      .object-palette {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .object-btn {
+        width: 70px;
+        height: 70px;
+        min-height: 70px;
+        min-width: 70px;
+      }
+
+      .properties-panel {
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .toolbar, .zoom-controls, .rotation-controls {
+        gap: 4px;
+      }
+
+      .pill {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+
+      .zoom-level {
+        font-size: 10px;
+        padding: 6px 8px;
+      }
+
+      .minimap {
+        width: 120px;
+        height: 80px;
+        right: 8px;
+        bottom: 8px;
+      }
+
+      /* Hide non-essential desktop elements */
+      .desktop-only {
+        display: none !important;
+      }
+
+      /* Improve text readability on mobile */
+      body {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+
+      /* Better scrolling for mobile */
+      .sidebar {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+      }
+
+      /* Prevent zoom on input focus */
+      .form-control {
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
+    }
+
+    @media (max-width: 768px) {
+      .object-palette {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .object-btn {
+        width: 60px;
+        height: 60px;
+        min-height: 60px;
+        min-width: 60px;
+      }
+
+      .object-btn i {
+        font-size: 20px;
+        margin-bottom: 4px;
+      }
+
+      .object-btn span {
+        font-size: 10px;
+      }
+
+      .minimap {
+        width: 100px;
+        height: 70px;
+      }
+
+      .stat {
+        padding: 8px 12px;
+      }
+
+      .properties-panel h3 {
+        font-size: 12px;
+      }
+
+      .form-group label {
+        font-size: 11px;
+      }
+
+      .form-control {
+        padding: 6px 8px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .object-palette {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .object-btn {
+        width: 55px;
+        height: 55px;
+        min-height: 55px;
+        min-width: 55px;
+      }
+
+      .object-btn i {
+        font-size: 18px;
+        margin-bottom: 2px;
+      }
+
+      .object-btn span {
+        display: none;
+      }
+
+      .canvas-wrap {
+        height: calc(100vh - 160px) !important;
+        margin: 4px;
+      }
+
+      .toolbar, .zoom-controls, .rotation-controls {
+        left: 8px;
+        top: 8px;
+        gap: 2px;
+      }
+
+      .pill {
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+
+      .zoom-level {
+        display: none;
+      }
+
+      .minimap {
+        width: 80px;
+        height: 60px;
+        right: 4px;
+        bottom: 4px;
+      }
+    }
+
+    /* Landscape orientation optimizations */
+    @media (max-width: 1024px) and (orientation: landscape) {
+      .canvas-wrap {
+        height: calc(100vh - 140px) !important;
+      }
+
+      .sidebar {
+        max-height: calc(100vh - 160px);
+      }
+    }
+
+    /* PWA specific styles */
+    @media (display-mode: standalone) {
+      .canvas-wrap {
+        height: calc(100vh - 140px) !important;
+      }
+
+      /* Hide browser UI elements in PWA mode */
+      .mobile {
+        display: none !important;
+      }
+    }
+
+    /* High DPI / Retina display optimizations */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .object-btn i {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    }
+
+    /* Reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      .btn, .pill, .object-btn {
+        transition: none;
+      }
+
+      .btn:hover, .pill:hover, .object-btn:hover {
+        transform: none;
+      }
+
+      .glass {
+        backdrop-filter: none;
+        background: rgba(15, 23, 42, 0.95);
+      }
+    }
+
+    /* Dark mode enhancements (already dark, but for consistency) */
+    @media (prefers-color-scheme: dark) {
+      .glass {
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+    }
+
+    /* Focus management for accessibility */
+    .btn:focus-visible, .pill:focus-visible, .object-btn:focus-visible {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+
+    /* Loading states for better UX */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* Performance optimizations */
+    .object-btn {
+      will-change: transform;
+    }
+
+    .btn, .pill {
+      will-change: transform;
+    }
+
+    /* Battery-aware performance adjustments */
+    :root {
+      --animation-duration: 0.2s;
+      --shadow-blur: 8px;
+    }
+
+    .btn, .pill, .object-btn {
+      transition: all var(--animation-duration) ease;
+    }
+
+    .object-btn {
+      box-shadow: 0 4px var(--shadow-blur) rgba(59, 130, 246, 0.1);
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -523,29 +817,29 @@
     </div>
     
     <div class="flex items-center gap-2">
-      <button id="toggleSidebar" class="btn mobile glass">
+      <button id="toggleSidebar" class="btn mobile glass touch-target mobile-optimized">
         <i class="fas fa-bars"></i>
       </button>
-      <button id="toggleCollapse" class="btn glass text-purple-300" title="Collapse Menu">
+      <button id="toggleCollapse" class="btn glass text-purple-300 touch-target mobile-optimized" title="Collapse Menu">
         <i class="fas fa-chevron-left"></i>
       </button>
-      <button id="shortcutsBtn" class="btn glass text-cyan-300" title="Keyboard Shortcuts">
+      <button id="shortcutsBtn" class="btn glass text-cyan-300 touch-target mobile-optimized" title="Keyboard Shortcuts">
         <i class="fas fa-keyboard"></i>
         <span class="hidden md:block">Shortcuts</span>
       </button>
-      <button id="undoBtn" class="btn glass text-gray-300" title="Undo (Ctrl+Z)">
+      <button id="undoBtn" class="btn glass text-gray-300 touch-target mobile-optimized" title="Undo (Ctrl+Z)">
         <i class="fas fa-undo"></i>
         <span class="hidden md:block">Undo</span>
       </button>
-      <button id="redoBtn" class="btn glass text-gray-300" title="Redo (Ctrl+Y)">
+      <button id="redoBtn" class="btn glass text-gray-300 touch-target mobile-optimized" title="Redo (Ctrl+Y)">
         <i class="fas fa-redo"></i>
         <span class="hidden md:block">Redo</span>
       </button>
-      <button id="clearBtn" class="btn glass text-red-300" title="Clear All">
+      <button id="clearBtn" class="btn glass text-red-300 touch-target mobile-optimized" title="Clear All">
         <i class="fas fa-trash"></i>
         <span class="hidden md:block">Clear</span>
       </button>
-      <button id="exportBtn" class="btn glass text-sky-300" title="Export PNG">
+      <button id="exportBtn" class="btn glass text-sky-300 touch-target mobile-optimized" title="Export PNG">
         <i class="fas fa-download"></i>
         <span class="hidden md:block">Export</span>
       </button>
@@ -560,47 +854,47 @@
       </h2>
       
       <div class="object-palette" id="palette">
-        <button class="object-btn active" data-type="circle" title="Round Table">
+        <button class="object-btn touch-target mobile-optimized active" data-type="circle" title="Round Table">
           <i class="fas fa-circle"></i>
           <span class="sidebar-content">Round</span>
         </button>
-        <button class="object-btn" data-type="square" title="Square Table">
+        <button class="object-btn touch-target mobile-optimized" data-type="square" title="Square Table">
           <i class="fas fa-square"></i>
           <span class="sidebar-content">Square</span>
         </button>
-        <button class="object-btn" data-type="rectangle" title="Rectangle Table">
+        <button class="object-btn touch-target mobile-optimized" data-type="rectangle" title="Rectangle Table">
           <i class="fas fa-rectangle-wide"></i>
           <span class="sidebar-content">Rect</span>
         </button>
-        <button class="object-btn" data-type="oval" title="Oval Table">
+        <button class="object-btn touch-target mobile-optimized" data-type="oval" title="Oval Table">
           <i class="fas fa-ellipsis-h"></i>
           <span class="sidebar-content">Oval</span>
         </button>
-        <button class="object-btn" data-type="chair" title="Chair">
+        <button class="object-btn touch-target mobile-optimized" data-type="chair" title="Chair">
           <i class="fas fa-chair"></i>
           <span class="sidebar-content">Chair</span>
         </button>
-        <button class="object-btn" data-type="sofa" title="Sofa/Booth">
+        <button class="object-btn touch-target mobile-optimized" data-type="sofa" title="Sofa/Booth">
           <i class="fas fa-couch"></i>
           <span class="sidebar-content">Sofa</span>
         </button>
-        <button class="object-btn" data-type="bar" title="Bar Counter">
+        <button class="object-btn touch-target mobile-optimized" data-type="bar" title="Bar Counter">
           <i class="fas fa-chart-bar"></i>
           <span class="sidebar-content">Bar</span>
         </button>
-        <button class="object-btn" data-type="servicestation" title="Service Station">
+        <button class="object-btn touch-target mobile-optimized" data-type="servicestation" title="Service Station">
           <i class="fas fa-concierge-bell"></i>
           <span class="sidebar-content">Station</span>
         </button>
-        <button class="object-btn" data-type="preparea" title="Prep Area">
+        <button class="object-btn touch-target mobile-optimized" data-type="preparea" title="Prep Area">
           <i class="fas fa-utensils"></i>
           <span class="sidebar-content">Prep</span>
         </button>
-        <button class="object-btn" data-type="stagearea" title="Stage Area">
+        <button class="object-btn touch-target mobile-optimized" data-type="stagearea" title="Stage Area">
           <i class="fas fa-star"></i>
           <span class="sidebar-content">Stage</span>
         </button>
-        <button class="object-btn" data-type="wall" title="Wall">
+        <button class="object-btn touch-target mobile-optimized" data-type="wall" title="Wall">
           <i class="fas fa-grip-lines"></i>
           <span class="sidebar-content">Wall</span>
         </button>
@@ -611,11 +905,11 @@
           <h3>Object Properties</h3>
           <div class="form-group">
             <label for="seatInput">Seats</label>
-            <input id="seatInput" type="number" value="4" min="1" max="12" class="form-control">
+            <input id="seatInput" type="number" value="4" min="1" max="12" class="form-control touch-target mobile-optimized">
           </div>
           <div class="form-group">
             <label for="labelInput">Label</label>
-            <input id="labelInput" type="text" placeholder="Table A1" class="form-control">
+            <input id="labelInput" type="text" placeholder="Table A1" class="form-control touch-target mobile-optimized">
           </div>
         </div>
 
@@ -623,19 +917,19 @@
           <h3>Grid & Snap Settings</h3>
           <div class="flex items-center justify-between mb-3">
             <span class="text-sm">Snap to grid</span>
-            <input id="snapToggle" type="checkbox" class="grid-toggle" checked>
+            <input id="snapToggle" type="checkbox" class="grid-toggle touch-target mobile-optimized" checked>
           </div>
           <div class="flex items-center justify-between mb-3">
             <span class="text-sm">Show grid</span>
-            <input id="gridToggle" type="checkbox" class="grid-toggle" checked>
+            <input id="gridToggle" type="checkbox" class="grid-toggle touch-target mobile-optimized" checked>
           </div>
           <div class="form-group">
             <label for="gridSize">Grid Size</label>
-            <input id="gridSize" type="number" value="20" min="10" max="100" step="5" class="form-control">
+            <input id="gridSize" type="number" value="20" min="10" max="100" step="5" class="form-control touch-target mobile-optimized">
           </div>
           <div class="form-group">
             <label for="gridOpacity">Grid Opacity</label>
-            <input id="gridOpacity" type="range" min="0.1" max="1" step="0.1" value="0.3" class="w-full">
+            <input id="gridOpacity" type="range" min="0.1" max="1" step="0.1" value="0.3" class="w-full touch-target mobile-optimized">
           </div>
         </div>
 
@@ -643,34 +937,34 @@
           <h3>Rotation Settings</h3>
           <div class="flex items-center justify-between mb-3">
             <span class="text-sm">Enable Rotation</span>
-            <input id="rotateEnable" type="checkbox" class="grid-toggle" checked>
+            <input id="rotateEnable" type="checkbox" class="grid-toggle touch-target mobile-optimized" checked>
           </div>
           <div class="flex items-center justify-between mb-3">
             <span class="text-sm">Rotation Snap</span>
-            <input id="rotationSnapToggle" type="checkbox" class="grid-toggle" checked>
+            <input id="rotationSnapToggle" type="checkbox" class="grid-toggle touch-target mobile-optimized" checked>
           </div>
           <div class="form-group">
             <label for="snapAngle">Snap Angle (°)</label>
-            <input id="snapAngle" type="number" value="45" min="1" max="180" class="form-control">
+            <input id="snapAngle" type="number" value="45" min="1" max="180" class="form-control touch-target mobile-optimized">
           </div>
         </div>
 
         <div class="properties-panel">
           <h3>Colors</h3>
           <div class="grid grid-cols-5 gap-2" id="colorRow">
-            <button class="pill h-8 w-8" data-color="#F59E0B" style="background:#F59E0B; border-radius: 50%;"></button>
-            <button class="pill h-8 w-8" data-color="#3B82F6" style="background:#3B82F6; border-radius: 50%;"></button>
-            <button class="pill h-8 w-8" data-color="#10B981" style="background:#10B981; border-radius: 50%;"></button>
-            <button class="pill h-8 w-8" data-color="#EF4444" style="background:#EF4444; border-radius: 50%;"></button>
-            <button class="pill h-8 w-8" data-color="#8B5CF6" style="background:#8B5CF6; border-radius: 50%;"></button>
+            <button class="pill h-8 w-8 touch-target mobile-optimized" data-color="#F59E0B" style="background:#F59E0B; border-radius: 50%;"></button>
+            <button class="pill h-8 w-8 touch-target mobile-optimized" data-color="#3B82F6" style="background:#3B82F6; border-radius: 50%;"></button>
+            <button class="pill h-8 w-8 touch-target mobile-optimized" data-color="#10B981" style="background:#10B981; border-radius: 50%;"></button>
+            <button class="pill h-8 w-8 touch-target mobile-optimized" data-color="#EF4444" style="background:#EF4444; border-radius: 50%;"></button>
+            <button class="pill h-8 w-8 touch-target mobile-optimized" data-color="#8B5CF6" style="background:#8B5CF6; border-radius: 50%;"></button>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 pt-2">
-          <button id="saveBtn" class="btn glass text-emerald-300">
+          <button id="saveBtn" class="btn glass text-emerald-300 touch-target mobile-optimized">
             <i class="fas fa-save"></i>Save
           </button>
-          <button id="loadBtn" class="btn glass text-yellow-300">
+          <button id="loadBtn" class="btn glass text-yellow-300 touch-target mobile-optimized">
             <i class="fas fa-folder-open"></i>Load
           </button>
         </div>
@@ -680,36 +974,36 @@
     <main class="flex-1 p-4 relative">
       <div id="canvasWrap" class="canvas-wrap h-[calc(100vh-160px)] glass">
         <div class="toolbar">
-          <button id="handTool" class="pill" title="Pan Tool (Space)">
+          <button id="handTool" class="pill touch-target mobile-optimized" title="Pan Tool (Space)">
             <i class="fas fa-hand-paper"></i>
           </button>
-          <button id="selectTool" class="pill active" title="Select Tool">
+          <button id="selectTool" class="pill touch-target mobile-optimized active" title="Select Tool">
             <i class="fas fa-mouse-pointer"></i>
           </button>
-          <button id="rotateTool" class="pill" title="Rotate Tool (R)">
+          <button id="rotateTool" class="pill touch-target mobile-optimized" title="Rotate Tool (R)">
             <i class="fas fa-sync-alt"></i>
           </button>
         </div>
         
         <div class="zoom-controls">
           <div class="zoom-level" id="zoomLevel">100%</div>
-          <button id="zoomIn" class="pill" title="Zoom In (+)">
+          <button id="zoomIn" class="pill touch-target mobile-optimized" title="Zoom In (+)">
             <i class="fas fa-search-plus"></i>
           </button>
-          <button id="zoomOut" class="pill" title="Zoom Out (-)">
+          <button id="zoomOut" class="pill touch-target mobile-optimized" title="Zoom Out (-)">
             <i class="fas fa-search-minus"></i>
           </button>
-          <button id="resetZoom" class="pill" title="Reset Zoom (0)">
+          <button id="resetZoom" class="pill touch-target mobile-optimized" title="Reset Zoom (0)">
             <i class="fas fa-sync-alt"></i>
           </button>
         </div>
         
         <div class="rotation-controls">
           <div class="rotation-info" id="rotationInfo">Rotation: 0°</div>
-          <button id="rotateLeft" class="pill" title="Rotate Left (Q)">
+          <button id="rotateLeft" class="pill touch-target mobile-optimized" title="Rotate Left (Q)">
             <i class="fas fa-undo"></i>
           </button>
-          <button id="rotateRight" class="pill" title="Rotate Right (E)">
+          <button id="rotateRight" class="pill touch-target mobile-optimized" title="Rotate Right (E)">
             <i class="fas fa-redo"></i>
           </button>
         </div>
@@ -1870,6 +2164,232 @@
     });
 
     updateLoadProgress(100);
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('SW registered: ', registration);
+
+            // Check for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    toast('New version available! Refresh to update.', 'info');
+                  }
+                });
+              }
+            });
+          })
+          .catch((registrationError) => {
+            console.log('SW registration failed: ', registrationError);
+          });
+      });
+    }
+
+    // PWA Installation Prompt
+    let deferredPrompt;
+    const installBtn = document.createElement('button');
+    installBtn.id = 'installBtn';
+    installBtn.className = 'btn glass text-emerald-300';
+    installBtn.innerHTML = '<i class="fas fa-download"></i><span class="hidden md:block">Install App</span>';
+    installBtn.style.display = 'none';
+
+    // Add install button to header
+    const headerButtons = document.querySelector('header .flex.items-center.gap-2:last-child');
+    if (headerButtons) {
+      headerButtons.insertBefore(installBtn, headerButtons.firstChild);
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('PWA installation prompt triggered');
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'flex';
+
+      installBtn.onclick = () => {
+        installBtn.style.display = 'none';
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            toast('App installed successfully!', 'success');
+          } else {
+            toast('Installation cancelled', 'info');
+          }
+          deferredPrompt = null;
+        });
+      };
+    });
+
+    // Detect if app is installed
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('PWA was installed successfully');
+      toast('Welcome! Avela has been installed as an app.', 'success');
+    });
+
+    // Check if running as PWA
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log('App is running in standalone mode (PWA)');
+    }
+
+    // Enhanced touch gesture support for Konva
+    const stageElement = document.getElementById('stage');
+    let touchStartDistance = 0;
+    let touchStartAngle = 0;
+    let initialPinchCenter = { x: 0, y: 0 };
+
+    // Touch event handlers for pinch-to-zoom
+    stageElement.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        touchStartDistance = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+        initialPinchCenter = {
+          x: (touch1.clientX + touch2.clientX) / 2,
+          y: (touch1.clientY + touch2.clientY) / 2
+        };
+      }
+    });
+
+    stageElement.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && touchStartDistance > 0) {
+        e.preventDefault();
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        const currentDistance = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+
+        const scale = currentDistance / touchStartDistance;
+        const newScale = Math.max(0.1, Math.min(5, world.scaleX() * scale));
+
+        // Calculate pinch center in stage coordinates
+        const stageRect = stageElement.getBoundingClientRect();
+        const pinchCenter = {
+          x: ((touch1.clientX + touch2.clientX) / 2 - stageRect.left) / (stageRect.width / stageElement.offsetWidth),
+          y: ((touch1.clientY + touch2.clientY) / 2 - stageRect.top) / (stageRect.height / stageElement.offsetHeight)
+        };
+
+        smoothZoom(newScale, pinchCenter);
+        touchStartDistance = currentDistance;
+      }
+    });
+
+    stageElement.addEventListener('touchend', () => {
+      touchStartDistance = 0;
+    });
+
+    // Enhanced mobile UI adjustments
+    function adjustForMobile() {
+      const isMobile = window.innerWidth <= 1024;
+      const sidebar = document.getElementById('sidebar');
+
+      if (isMobile) {
+        // Hide desktop-only elements
+        document.querySelectorAll('.desktop-only').forEach(el => {
+          el.style.display = 'none';
+        });
+
+        // Adjust canvas for mobile
+        const canvasWrap = document.getElementById('canvasWrap');
+        if (canvasWrap) {
+          canvasWrap.style.height = 'calc(100vh - 200px)';
+        }
+
+        // Auto-collapse sidebar on mobile
+        if (sidebar && !sidebar.classList.contains('collapsed')) {
+          sidebar.classList.add('collapsed');
+          const toggleIcon = document.getElementById('toggleCollapse').querySelector('i');
+          if (toggleIcon) {
+            toggleIcon.classList.remove('fa-chevron-left');
+            toggleIcon.classList.add('fa-chevron-right');
+          }
+        }
+      } else {
+        // Show desktop elements
+        document.querySelectorAll('.desktop-only').forEach(el => {
+          el.style.display = 'block';
+        });
+      }
+    }
+
+    // Initial mobile adjustment
+    adjustForMobile();
+    window.addEventListener('resize', adjustForMobile);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(adjustForMobile, 100);
+    });
+
+    // Add touch feedback for buttons
+    document.querySelectorAll('.btn, .pill, .object-btn').forEach(btn => {
+      btn.addEventListener('touchstart', function() {
+        this.style.transform = 'scale(0.95)';
+      });
+
+      btn.addEventListener('touchend', function() {
+        this.style.transform = '';
+      });
+    });
+
+    // Improve tap targets for mobile
+    document.querySelectorAll('.object-btn').forEach(btn => {
+      btn.style.minHeight = '60px';
+      btn.style.minWidth = '60px';
+    });
+
+    // Add haptic feedback for mobile (if supported)
+    function hapticFeedback() {
+      if ('vibrate' in navigator) {
+        navigator.vibrate(50);
+      }
+    }
+
+    // Add haptic feedback to key interactions
+    document.addEventListener('touchstart', () => hapticFeedback(), { passive: true });
+
+    // Performance optimization for mobile
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.willChange = 'transform';
+          } else {
+            entry.target.style.willChange = 'auto';
+          }
+        });
+      });
+
+      document.querySelectorAll('.object-btn, .btn, .pill').forEach(el => {
+        observer.observe(el);
+      });
+    }
+
+    // Battery level monitoring (for performance adjustments)
+    if ('getBattery' in navigator) {
+      navigator.getBattery().then((battery) => {
+        const updateBattery = () => {
+          if (battery.level < 0.2) {
+            // Reduce visual effects for low battery
+            document.documentElement.style.setProperty('--animation-duration', '0.1s');
+            document.documentElement.style.setProperty('--shadow-blur', '2px');
+          } else {
+            document.documentElement.style.setProperty('--animation-duration', '0.2s');
+            document.documentElement.style.setProperty('--shadow-blur', '8px');
+          }
+        };
+
+        updateBattery();
+        battery.addEventListener('levelchange', updateBattery);
+      });
+    }
   </script>
 </body>
 </html>
