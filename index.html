@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Avela - Restaurant Layout Designer</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiNmNWY1ZjUiIHN0cm9rZT0iIzg0N2M0YyIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxyZWN0IHg9IjEwIiB5PSIyMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8cmVjdCB4PSIxMCIgeT0iMTIiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8Y2lyY2xlIGN4PSIyMCIgY3k9IjE2IiByPSI0IiBmaWxsPSIjZGYyNDI0Ii8+Cjx0ZXh0IHg9IjIwIiB5PSIzNSIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMTY1MzM2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5BdmVsYTwvdGV4dD4KPC9zdmc+">
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTgiIGZpbGw9IiNmNWY1ZjUiIHN0cm9rZT0iIzg0N2M0YyIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxyZWN0IHg9IjEwIiB5PSIyMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8cmVjdCB4PSIxMCIgeT0iMTIiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiBmaWxsPSIjNGI1NTYzIiByeD0iMiIvPgo8Y2lyY2xlIGN4PSIyMCIgY3k=">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e5e7eb;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif;
+      overflow: hidden;
+      margin: 0;
+      min-height: 100vh;
+    }
+    
+    .glass {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: saturate(120%) blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn {
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      font-weight: 500;
+      border: none;
+      background: transparent;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .sidebar {
+      width: 340px;
+      transition: all 0.3s ease;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .sidebar.collapsed {
+      width: 70px;
+    }
+    
+    .grid-toggle {
+      accent-color: #3b82f6;
+      transform: scale(1.2);
+    }
+    
+    .stat {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    
+    .canvas-wrap {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+    
+    .toolbar {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    
+    .pill {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      color: #e5e7eb;
+      border: none;
+    }
+    
+    .pill:hover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #3b82f6;
+    }
+    
+    .pill.active {
+      background: rgba(59, 130, 246, 0.3);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+    
+    .mobile { display: none; }
+    
+    /* Enhanced object buttons */
+    .object-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.7);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      border: none;
+    }
+    
+    .object-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .object-btn:hover {
+      transform: translateY(-3px);
+      background: rgba(30, 41, 59, 0.9);
+      border-color: #3b82f6;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+    }
+    
+    .object-btn:hover::before {
+      left: 100%;
+    }
+    
+    .object-btn.active {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    
+    .object-btn i {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #e5e7eb;
+    }
+    
+    .object-btn span {
+      font-size: 12px;
+      text-align: center;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+    
+    .object-palette {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .sidebar-content {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sidebar.collapsed .sidebar-content {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .sidebar.collapsed .object-palette {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .sidebar.collapsed .object-btn {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 8px;
+    }
+    
+    .sidebar.collapsed .object-btn i {
+      font-size: 18px;
+      margin-bottom: 0;
+    }
+    
+    .sidebar.collapsed .object-btn span {
+      display: none;
+    }
+    
+    /* Enhanced minimap */
+    .minimap {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      width: 180px;
+      height: 120px;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 12px;
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      z-index: 10;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+    
+    .minimap-viewport {
+      position: absolute;
+      border: 2px solid #3b82f6;
+      background: rgba(59, 130, 246, 0.15);
+      pointer-events: none;
+      border-radius: 4px;
+    }
+    
+    .loading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+      width: 0%;
+      transition: width 0.4s ease;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+    
+    /* Enhanced properties panel */
+    .properties-panel {
+      background: rgba(30, 41, 59, 0.8);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .properties-panel h3 {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #3b82f6;
+    }
+    
+    .form-group {
+      margin-bottom: 12px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 4px;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #e5e7eb;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+    
+    /* Enhanced zoom controls */
+    .zoom-controls {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+    
+    .zoom-level {
+      background: rgba(30, 41, 59, 0.9);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #3b82f6;
+      text-align: center;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Keyboard shortcuts panel */
+    .shortcuts-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 16px;
+      padding: 24px;
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: none;
+      max-width: 400px;
+      width: 90%;
+    }
+    
+    .shortcuts-panel.active {
+      display: block;
+    }
+    
+    .shortcut-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .shortcut-key {
+      background: rgba(59, 130, 246, 0.2);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #3b82f6;
+    }
+    
+    /* Rotation controls */
+    .rotation-controls {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    
+    .rotation-info {
+      background: rgba(30, 41, 59, 0.9);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #3b82f6;
+      text-align: center;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        bottom: 0;
+        z-index: 50;
+        transition: left 0.3s ease;
+      }
+      
+      .sidebar.open {
+        left: 0;
+      }
+      
+      .mobile {
+        display: block;
+      }
+      
+      .object-palette {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .object-btn {
+        width: 70px;
+        height: 70px;
+      }
+      
+      .minimap {
+        width: 140px;
+        height: 90px;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .object-palette {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .object-btn {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .object-btn i {
+        font-size: 18px;
+      }
+      
+      .object-btn span {
+        font-size: 10px;
+      }
+      
+      .minimap {
+        width: 120px;
+        height: 80px;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <div class="loading-bar" id="loadingBar"></div>
+  
+  <!-- Keyboard Shortcuts Panel -->
+  <div class="shortcuts-panel" id="shortcutsPanel">
+    <h3 class="text-lg font-bold mb-4 text-center text-blue-400">Keyboard Shortcuts</h3>
+    <div class="shortcut-item">
+      <span>Pan Tool</span>
+      <span class="shortcut-key">Space</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Delete Selected</span>
+      <span class="shortcut-key">Delete</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Undo</span>
+      <span class="shortcut-key">Ctrl+Z</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Redo</span>
+      <span class="shortcut-key">Ctrl+Y</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Save</span>
+      <span class="shortcut-key">Ctrl+S</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Toggle Grid</span>
+      <span class="shortcut-key">G</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Zoom In</span>
+      <span class="shortcut-key">+</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Zoom Out</span>
+      <span class="shortcut-key">-</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Reset Zoom</span>
+      <span class="shortcut-key">0</span>
+    </div>
+    <div class="shortcut-item">
+      <span>Rotate Object</span>
+      <span class="shortcut-key">R</span>
+    </div>
+    <button class="btn glass text-gray-300 mt-4 w-full" onclick="toggleShortcuts()">
+      <i class="fas fa-times"></i>Close
+    </button>
+  </div>
+  
+  <header class="glass p-4 sticky top-0 z-20 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="18" fill="#f5f5f5" stroke="#847c4c" stroke-width="2"/>
+          <rect x="10" y="20" width="20" height="10" fill="#4b5563" rx="2"/>
+          <rect x="10" y="12" width="20" height="8" fill="#4b5563" rx="2"/>
+          <circle cx="20" cy="16" r="4" fill="#df2424"/>
+        </svg>
+        <h1 class="text-xl font-bold text-white">Avela</h1>
+      </div>
+    </div>
+    
+    <div class="hidden md:flex items-center gap-3">
+      <div class="stat">
+        <i class="fas fa-chair text-amber-400"></i>
+        <div>
+          <div class="text-xs text-gray-400">Seats</div>
+          <div id="statSeats" class="font-bold">0</div>
+        </div>
+      </div>
+      <div class="stat">
+        <i class="fas fa-table text-blue-400"></i>
+        <div>
+          <div class="text-xs text-gray-400">Tables</div>
+          <div id="statTables" class="font-bold">0</div>
+        </div>
+      </div>
+      <div class="stat">
+        <i class="fas fa-utensils text-emerald-400"></i>
+        <div>
+          <div class="text-xs text-gray-400">Stations</div>
+          <div id="statStations" class="font-bold">0</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <button id="toggleSidebar" class="btn mobile glass">
+        <i class="fas fa-bars"></i>
+      </button>
+      <button id="toggleCollapse" class="btn glass text-purple-300" title="Collapse Menu">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button id="shortcutsBtn" class="btn glass text-cyan-300" title="Keyboard Shortcuts">
+        <i class="fas fa-keyboard"></i>
+        <span class="hidden md:block">Shortcuts</span>
+      </button>
+      <button id="undoBtn" class="btn glass text-gray-300" title="Undo (Ctrl+Z)">
+        <i class="fas fa-undo"></i>
+        <span class="hidden md:block">Undo</span>
+      </button>
+      <button id="redoBtn" class="btn glass text-gray-300" title="Redo (Ctrl+Y)">
+        <i class="fas fa-redo"></i>
+        <span class="hidden md:block">Redo</span>
+      </button>
+      <button id="clearBtn" class="btn glass text-red-300" title="Clear All">
+        <i class="fas fa-trash"></i>
+        <span class="hidden md:block">Clear</span>
+      </button>
+      <button id="exportBtn" class="btn glass text-sky-300" title="Export PNG">
+        <i class="fas fa-download"></i>
+        <span class="hidden md:block">Export</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+    <aside id="sidebar" class="sidebar glass p-4 overflow-y-auto">
+      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2 sidebar-content">
+        <i class="fas fa-object-group text-blue-400"></i>
+        Elements
+      </h2>
+      
+      <div class="object-palette" id="palette">
+        <button class="object-btn active" data-type="circle" title="Round Table">
+          <i class="fas fa-circle"></i>
+          <span class="sidebar-content">Round</span>
+        </button>
+        <button class="object-btn" data-type="square" title="Square Table">
+          <i class="fas fa-square"></i>
+          <span class="sidebar-content">Square</span>
+        </button>
+        <button class="object-btn" data-type="rectangle" title="Rectangle Table">
+          <i class="fas fa-rectangle-wide"></i>
+          <span class="sidebar-content">Rect</span>
+        </button>
+        <button class="object-btn" data-type="oval" title="Oval Table">
+          <i class="fas fa-ellipsis-h"></i>
+          <span class="sidebar-content">Oval</span>
+        </button>
+        <button class="object-btn" data-type="chair" title="Chair">
+          <i class="fas fa-chair"></i>
+          <span class="sidebar-content">Chair</span>
+        </button>
+        <button class="object-btn" data-type="sofa" title="Sofa/Booth">
+          <i class="fas fa-couch"></i>
+          <span class="sidebar-content">Sofa</span>
+        </button>
+        <button class="object-btn" data-type="bar" title="Bar Counter">
+          <i class="fas fa-chart-bar"></i>
+          <span class="sidebar-content">Bar</span>
+        </button>
+        <button class="object-btn" data-type="servicestation" title="Service Station">
+          <i class="fas fa-concierge-bell"></i>
+          <span class="sidebar-content">Station</span>
+        </button>
+        <button class="object-btn" data-type="preparea" title="Prep Area">
+          <i class="fas fa-utensils"></i>
+          <span class="sidebar-content">Prep</span>
+        </button>
+        <button class="object-btn" data-type="stagearea" title="Stage Area">
+          <i class="fas fa-star"></i>
+          <span class="sidebar-content">Stage</span>
+        </button>
+        <button class="object-btn" data-type="wall" title="Wall">
+          <i class="fas fa-grip-lines"></i>
+          <span class="sidebar-content">Wall</span>
+        </button>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="properties-panel">
+          <h3>Object Properties</h3>
+          <div class="form-group">
+            <label for="seatInput">Seats</label>
+            <input id="seatInput" type="number" value="4" min="1" max="12" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="labelInput">Label</label>
+            <input id="labelInput" type="text" placeholder="Table A1" class="form-control">
+          </div>
+        </div>
+
+        <div class="properties-panel">
+          <h3>Grid & Snap Settings</h3>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm">Snap to grid</span>
+            <input id="snapToggle" type="checkbox" class="grid-toggle" checked>
+          </div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm">Show grid</span>
+            <input id="gridToggle" type="checkbox" class="grid-toggle" checked>
+          </div>
+          <div class="form-group">
+            <label for="gridSize">Grid Size</label>
+            <input id="gridSize" type="number" value="20" min="10" max="100" step="5" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="gridOpacity">Grid Opacity</label>
+            <input id="gridOpacity" type="range" min="0.1" max="1" step="0.1" value="0.3" class="w-full">
+          </div>
+        </div>
+
+        <div class="properties-panel">
+          <h3>Rotation Settings</h3>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm">Enable Rotation</span>
+            <input id="rotateEnable" type="checkbox" class="grid-toggle" checked>
+          </div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm">Rotation Snap</span>
+            <input id="rotationSnapToggle" type="checkbox" class="grid-toggle" checked>
+          </div>
+          <div class="form-group">
+            <label for="snapAngle">Snap Angle (°)</label>
+            <input id="snapAngle" type="number" value="45" min="1" max="180" class="form-control">
+          </div>
+        </div>
+
+        <div class="properties-panel">
+          <h3>Colors</h3>
+          <div class="grid grid-cols-5 gap-2" id="colorRow">
+            <button class="pill h-8 w-8" data-color="#F59E0B" style="background:#F59E0B; border-radius: 50%;"></button>
+            <button class="pill h-8 w-8" data-color="#3B82F6" style="background:#3B82F6; border-radius: 50%;"></button>
+            <button class="pill h-8 w-8" data-color="#10B981" style="background:#10B981; border-radius: 50%;"></button>
+            <button class="pill h-8 w-8" data-color="#EF4444" style="background:#EF4444; border-radius: 50%;"></button>
+            <button class="pill h-8 w-8" data-color="#8B5CF6" style="background:#8B5CF6; border-radius: 50%;"></button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <button id="saveBtn" class="btn glass text-emerald-300">
+            <i class="fas fa-save"></i>Save
+          </button>
+          <button id="loadBtn" class="btn glass text-yellow-300">
+            <i class="fas fa-folder-open"></i>Load
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-4 relative">
+      <div id="canvasWrap" class="canvas-wrap h-[calc(100vh-160px)] glass">
+        <div class="toolbar">
+          <button id="handTool" class="pill" title="Pan Tool (Space)">
+            <i class="fas fa-hand-paper"></i>
+          </button>
+          <button id="selectTool" class="pill active" title="Select Tool">
+            <i class="fas fa-mouse-pointer"></i>
+          </button>
+          <button id="rotateTool" class="pill" title="Rotate Tool (R)">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        
+        <div class="zoom-controls">
+          <div class="zoom-level" id="zoomLevel">100%</div>
+          <button id="zoomIn" class="pill" title="Zoom In (+)">
+            <i class="fas fa-search-plus"></i>
+          </button>
+          <button id="zoomOut" class="pill" title="Zoom Out (-)">
+            <i class="fas fa-search-minus"></i>
+          </button>
+          <button id="resetZoom" class="pill" title="Reset Zoom (0)">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        
+        <div class="rotation-controls">
+          <div class="rotation-info" id="rotationInfo">Rotation: 0°</div>
+          <button id="rotateLeft" class="pill" title="Rotate Left (Q)">
+            <i class="fas fa-undo"></i>
+          </button>
+          <button id="rotateRight" class="pill" title="Rotate Right (E)">
+            <i class="fas fa-redo"></i>
+          </button>
+        </div>
+        
+        <div class="minimap" id="minimap">
+          <div class="minimap-viewport" id="minimapViewport"></div>
+        </div>
+        
+        <div id="stage" style="width:100%;height:100%"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Show loading progress
+    const loadingBar = document.getElementById('loadingBar');
+    const updateLoadProgress = (progress) => {
+      loadingBar.style.width = `${progress}%`;
+      if (progress >= 100) setTimeout(() => loadingBar.style.opacity = 0, 300);
+    };
+    updateLoadProgress(30);
+
+    // Enhanced performance defaults
+    Konva.pixelRatio = window.devicePixelRatio > 1 ? 2 : 1;
+    let GRID_SIZE = 20;
+    const WORLD_SIZE = 2000000; // Larger world for complex layouts
+    let selectedType = 'circle';
+    let selectedColor = '#F59E0B';
+    let isPanning = false;
+    let isSpacePressed = false;
+    let sidebarCollapsed = false;
+    let undoStack = [];
+    let redoStack = [];
+    let currentZoom = 1;
+    let rotationMode = false;
+
+    // Enhanced stage setup
+    const stageContainer = document.getElementById('stage');
+    function sizeStageToContainer() {
+      const rect = stageContainer.getBoundingClientRect();
+      stage.width(rect.width);
+      stage.height(rect.height);
+      drawGrid();
+      updateMinimap();
+      updateZoomDisplay();
+    }
+
+    const stage = new Konva.Stage({
+      container: 'stage',
+      width: 10,
+      height: 10
+    });
+
+    const bgLayer = new Konva.FastLayer();
+    const worldLayer = new Konva.Layer({
+      hitGraphEnabled: true,
+      clearBeforeDraw: true
+    });
+    const guideLayer = new Konva.Layer({ listening: false });
+    stage.add(bgLayer, worldLayer, guideLayer);
+
+    // Enhanced grid with customizable appearance
+    function drawGrid() {
+      bgLayer.destroyChildren();
+      if (!document.getElementById('gridToggle').checked) {
+        bgLayer.batchDraw();
+        return;
+      }
+      
+      const scale = world.scaleX();
+      const stageRect = stage.getClientRect();
+      const opacity = document.getElementById('gridOpacity').value;
+      
+      const visibleArea = {
+        x: -world.x() / scale,
+        y: -world.y() / scale,
+        width: stageRect.width / scale,
+        height: stageRect.height / scale
+      };
+      
+      const startX = Math.floor(visibleArea.x / GRID_SIZE) * GRID_SIZE;
+      const endX = Math.ceil((visibleArea.x + visibleArea.width) / GRID_SIZE) * GRID_SIZE;
+      const startY = Math.floor(visibleArea.y / GRID_SIZE) * GRID_SIZE;
+      const endY = Math.ceil((visibleArea.y + visibleArea.height) / GRID_SIZE) * GRID_SIZE;
+      
+      const lines = [];
+      
+      // Major grid lines (every 5th line)
+      for (let x = startX; x <= endX; x += GRID_SIZE) {
+        const screenX = world.x() + x * scale;
+        const isMajor = (x / GRID_SIZE) % 5 === 0;
+        lines.push(new Konva.Line({
+          points: [screenX, 0, screenX, stage.height()],
+          stroke: isMajor ? `rgba(59,130,246,${opacity * 1.5})` : `rgba(59,130,246,${opacity})`,
+          strokeWidth: isMajor ? 1 : 0.5,
+          listening: false
+        }));
+      }
+      
+      for (let y = startY; y <= endY; y += GRID_SIZE) {
+        const screenY = world.y() + y * scale;
+        const isMajor = (y / GRID_SIZE) % 5 === 0;
+        lines.push(new Konva.Line({
+          points: [0, screenY, stage.width(), screenY],
+          stroke: isMajor ? `rgba(59,130,246,${opacity * 1.5})` : `rgba(59,130,246,${opacity})`,
+          strokeWidth: isMajor ? 1 : 0.5,
+          listening: false
+        }));
+      }
+      
+      bgLayer.add(...lines);
+      bgLayer.batchDraw();
+    }
+
+    // World group for pan/zoom
+    const world = new Konva.Group({
+      x: 50,
+      y: 50,
+      draggable: false
+    });
+    worldLayer.add(world);
+
+    // Enhanced transformer with better visual feedback
+    const transformer = new Konva.Transformer({
+      rotateEnabled: true,
+      enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+      anchorStroke: '#3b82f6',
+      anchorFill: '#3b82f6',
+      anchorSize: 8,
+      borderStroke: '#3b82f6',
+      borderStrokeWidth: 2,
+      rotationSnaps: [0, 45, 90, 135, 180, 225, 270, 315],
+      rotationSnapTolerance: 8,
+      anchorCornerRadius: 2
+    });
+    guideLayer.add(transformer);
+
+    // Enhanced state management
+    const $ = (sel) => document.querySelector(sel);
+    const statSeats = $('#statSeats');
+    const statTables = $('#statTables');
+    const statStations = $('#statStations');
+    const seatInput = $('#seatInput');
+    const labelInput = $('#labelInput');
+    const snapToggle = $('#snapToggle');
+    const gridToggle = $('#gridToggle');
+    const rotateEnable = $('#rotateEnable');
+    const rotationSnapToggle = $('#rotationSnapToggle');
+    const snapAngle = $('#snapAngle');
+    const gridSize = $('#gridSize');
+    const gridOpacity = $('#gridOpacity');
+
+    let tables = 0, seats = 0, stations = 0;
+    function updateStats() {
+      statSeats.textContent = seats;
+      statTables.textContent = tables;
+      statStations.textContent = stations;
+    }
+
+    // Enhanced snapping
+    const snap = (v) => snapToggle.checked ? Math.round(v / GRID_SIZE) * GRID_SIZE : v;
+
+    // Enhanced state management
+    function saveState() {
+      redoStack = [];
+      if (undoStack.length > 50) undoStack.shift(); // Limit undo stack
+      undoStack.push(serialize());
+    }
+
+    // Enhanced zoom display
+    function updateZoomDisplay() {
+      const zoomPercent = Math.round(world.scaleX() * 100);
+      document.getElementById('zoomLevel').textContent = `${zoomPercent}%`;
+      currentZoom = world.scaleX();
+    }
+
+    // Update rotation info display
+    function updateRotationInfo() {
+      const nodes = transformer.nodes();
+      if (nodes.length === 1) {
+        $('#rotationInfo').textContent = `Rotation: ${Math.round(nodes[0].rotation())}°`;
+      } else {
+        $('#rotationInfo').textContent = 'Rotation: 0°';
+      }
+    }
+
+    // Rotate selected objects
+    function rotateObjects(angle) {
+      const nodes = transformer.nodes();
+      if (nodes.length === 0) return;
+      
+      nodes.forEach(node => {
+        let newRotation = node.rotation() + angle;
+        
+        // Apply rotation snap if enabled
+        if (rotationSnapToggle.checked) {
+          const snapAngleValue = Number(snapAngle.value) || 45;
+          newRotation = Math.round(newRotation / snapAngleValue) * snapAngleValue;
+        }
+        
+        node.rotation(newRotation);
+      });
+      
+      worldLayer.batchDraw();
+      guideLayer.batchDraw();
+      updateRotationInfo();
+      saveState();
+    }
+
+    // Enhanced object creation with better visuals
+    function createObjectGroup(type, x, y, color) {
+      const group = new Konva.Group({
+        x, y,
+        draggable: true,
+        perfectDrawEnabled: false
+      });
+      
+      let shape;
+      const common = {
+        fill: color,
+        shadowEnabled: false,
+        stroke: '#fff',
+        strokeWidth: 2,
+        listening: true
+      };
+
+      // Enhanced object shapes with better appearance
+      if (type === 'circle') {
+        shape = new Konva.Circle({
+          ...common,
+          radius: 32,
+          shadowColor: 'rgba(0,0,0,0.3)',
+          shadowBlur: 8,
+          shadowOffset: { x: 2, y: 2 },
+          shadowEnabled: true
+        });
+        tables++;
+        seats += Number(seatInput.value || 0);
+      } else if (type === 'square') {
+        shape = new Konva.Rect({
+          ...common,
+          width: 64,
+          height: 64,
+          cornerRadius: 8,
+          offset: { x: 32, y: 32 },
+          shadowColor: 'rgba(0,0,0,0.3)',
+          shadowBlur: 8,
+          shadowOffset: { x: 2, y: 2 },
+          shadowEnabled: true
+        });
+        tables++;
+        seats += Number(seatInput.value || 0);
+      } else if (type === 'rectangle') {
+        shape = new Konva.Rect({
+          ...common,
+          width: 90,
+          height: 55,
+          cornerRadius: 8,
+          offset: { x: 45, y: 27.5 },
+          shadowColor: 'rgba(0,0,0,0.3)',
+          shadowBlur: 8,
+          shadowOffset: { x: 2, y: 2 },
+          shadowEnabled: true
+        });
+        tables++;
+        seats += Number(seatInput.value || 0);
+      } else if (type === 'oval') {
+        shape = new Konva.Ellipse({
+          ...common,
+          radiusX: 45,
+          radiusY: 28,
+          shadowColor: 'rgba(0,0,0,0.3)',
+          shadowBlur: 8,
+          shadowOffset: { x: 2, y: 2 },
+          shadowEnabled: true
+        });
+        tables++;
+        seats += Number(seatInput.value || 0);
+      } else if (type === 'chair') {
+        // Enhanced chair design
+        const seat = new Konva.Rect({
+          fill: '#6B7280',
+          width: 28,
+          height: 20,
+          cornerRadius: 6,
+          x: -14,
+          y: 0,
+          stroke: '#4B5563',
+          strokeWidth: 1
+        });
+        const back = new Konva.Rect({
+          fill: '#6B7280',
+          width: 28,
+          height: 14,
+          cornerRadius: [6, 6, 0, 0],
+          x: -14,
+          y: -14,
+          stroke: '#4B5563',
+          strokeWidth: 1
+        });
+        group.add(seat, back);
+        group.offsetX(0);
+        group.offsetY(3);
+      } else if (type === 'sofa') {
+        // Enhanced sofa design
+        const backLeft = new Konva.Rect({
+          x: -50, y: -22,
+          width: 45, height: 44,
+          fill: '#8B4513',
+          cornerRadius: [10, 0, 0, 10],
+          stroke: '#654321',
+          strokeWidth: 2
+        });
+        const backRight = new Konva.Rect({
+          x: 5, y: -22,
+          width: 45, height: 44,
+          fill: '#8B4513',
+          cornerRadius: [0, 10, 10, 0],
+          stroke: '#654321',
+          strokeWidth: 2
+        });
+        const cushionLeft = new Konva.Rect({
+          x: -45, y: 0,
+          width: 40, height: 18,
+          fill: '#DAA520',
+          cornerRadius: 5,
+          stroke: '#B8860B',
+          strokeWidth: 1
+        });
+        const cushionRight = new Konva.Rect({
+          x: 5, y: 0,
+          width: 40, height: 18,
+          fill: '#DAA520',
+          cornerRadius: 5,
+          stroke: '#B8860B',
+          strokeWidth: 1
+        });
+        const armLeft = new Konva.Rect({
+          x: -50, y: -22,
+          width: 5, height: 44,
+          fill: '#654321'
+        });
+        const armRight = new Konva.Rect({
+          x: 45, y: -22,
+          width: 5, height: 44,
+          fill: '#654321'
+        });
+        group.add(backLeft, backRight, cushionLeft, cushionRight, armLeft, armRight);
+        // Set offset to center of sofa for proper rotation (sofa spans -50 to 50 in X, -22 to 18 in Y)
+        group.offsetX(0);
+        group.offsetY(-2);
+      } else if (type === 'bar') {
+        shape = new Konva.Rect({
+          ...common,
+          fill: '#0891b2',
+          width: 160,
+          height: 32,
+          cornerRadius: 16,
+          offset: { x: 80, y: 16 },
+          shadowColor: 'rgba(0,0,0,0.3)',
+          shadowBlur: 8,
+          shadowOffset: { x: 2, y: 2 },
+          shadowEnabled: true
+        });
+      } else if (type === 'servicestation' || type === 'preparea' || type === 'stagearea') {
+        stations++;
+        const strokeColor = type === 'servicestation' ? '#22c55e' : 
+                           type === 'preparea' ? '#f97316' : '#8b5cf6';
+        shape = new Konva.Rect({
+          fill: 'transparent',
+          stroke: strokeColor,
+          strokeWidth: 3,
+          dash: [8, 6],
+          width: 130,
+          height: 80,
+          offset: { x: 65, y: 40 },
+          cornerRadius: 8
+        });
+      } else {
+        shape = new Konva.Rect({
+          ...common,
+          width: 60,
+          height: 40,
+          cornerRadius: 6,
+          offset: { x: 30, y: 20 }
+        });
+      }
+
+      // Enhanced labels
+      const labelTxt = labelInput.value || type[0].toUpperCase() + type.slice(1);
+      const label = new Konva.Text({
+        text: labelTxt,
+        fontSize: 13,
+        fill: '#ffffff',
+        fontFamily: 'Inter, sans-serif',
+        fontStyle: '600',
+        y: -(shape ? (type === 'oval' ? shape.radiusY() : shape.height() / 2) : 22) - 18,
+        align: 'center',
+        listening: false,
+        shadowColor: 'rgba(0,0,0,0.5)',
+        shadowBlur: 4,
+        shadowOffset: { x: 1, y: 1 },
+        shadowEnabled: true
+      });
+      label.offsetX(label.width() / 2);
+
+      const seatTxt = (type === 'circle' || type === 'square' || type === 'rectangle' || type === 'oval') ?
+        new Konva.Text({
+          text: `${seatInput.value || 0} seats`,
+          fontSize: 11,
+          fill: '#cbd5e1',
+          fontFamily: 'Inter, sans-serif',
+          y: (shape ? (type === 'oval' ? shape.radiusY() : shape.height() / 2) : 22) + 6,
+          listening: false
+        }) : null;
+      if (seatTxt) seatTxt.offsetX(seatTxt.width() / 2);
+
+      if (shape) group.add(shape);
+      group.add(label);
+      if (seatTxt) group.add(seatTxt);
+
+      // Enhanced interaction
+      group.cache({ pixelRatio: 1 });
+      group.on('dragstart transformstart', () => {
+        group.clearCache();
+        group.opacity(0.85);
+        guideLayer.batchDraw();
+      });
+      
+      group.on('dragmove', () => {
+        const p = group.position();
+        group.position({ x: snap(p.x), y: snap(p.y) });
+      });
+      
+      group.on('dragend transformend', () => {
+        group.opacity(1);
+        group.cache({ pixelRatio: 1 });
+        worldLayer.batchDraw();
+        saveState();
+      });
+      
+      group.on('mousedown', (e) => {
+        e.cancelBubble = true;
+        transformer.nodes([group]);
+        guideLayer.batchDraw();
+        updateRotationInfo();
+      });
+
+      // Enhanced hover effects
+      group.on('mouseenter', () => {
+        if (!group.isDragging()) {
+          group.opacity(0.9);
+          worldLayer.batchDraw();
+        }
+      });
+      
+      group.on('mouseleave', () => {
+        if (!group.isDragging()) {
+          group.opacity(1);
+          worldLayer.batchDraw();
+        }
+      });
+
+      // Double click/tap to rotate
+      group.on('dblclick dbltap', () => {
+        if (rotateEnable.checked) {
+          rotateObjects(45);
+        }
+      });
+
+      world.add(group);
+      updateStats();
+      worldLayer.batchDraw();
+      saveState();
+      return group;
+    }
+
+    // Enhanced wall creation
+    function createWallGroup(x, y) {
+      const group = new Konva.Group({ x, y, draggable: true });
+      const wall = new Konva.Line({
+        points: [-70, 0, 70, 0],
+        stroke: '#9CA3AF',
+        strokeWidth: 8,
+        lineCap: 'round',
+        lineJoin: 'round',
+        shadowColor: 'rgba(0,0,0,0.3)',
+        shadowBlur: 4,
+        shadowOffset: { x: 1, y: 2 },
+        shadowEnabled: true
+      });
+      
+      group.add(wall);
+      group.cache({ pixelRatio: 1 });
+      
+      group.on('dragstart transformstart', () => {
+        group.clearCache();
+        group.opacity(0.85);
+      });
+      
+      group.on('dragmove', () => {
+        const p = group.position();
+        group.position({ x: snap(p.x), y: snap(p.y) });
+      });
+      
+      group.on('dragend transformend', () => {
+        group.opacity(1);
+        group.cache({ pixelRatio: 1 });
+        worldLayer.batchDraw();
+        saveState();
+      });
+      
+      group.on('mousedown', (e) => {
+        e.cancelBubble = true;
+        transformer.nodes([group]);
+        guideLayer.batchDraw();
+        updateRotationInfo();
+      });
+
+      // Double click/tap to rotate
+      group.on('dblclick dbltap', () => {
+        if (rotateEnable.checked) {
+          rotateObjects(45);
+        }
+      });
+
+      world.add(group);
+      worldLayer.batchDraw();
+      saveState();
+      return group;
+    }
+
+    // Enhanced interaction handling
+    stage.on('mousedown', (e) => {
+      if (isPanning || isSpacePressed) return;
+      
+      if (e.target === stage || e.target.getParent() === bgLayer) {
+        const pointer = stage.getPointerPosition();
+        const worldPoint = {
+          x: (pointer.x - world.x()) / world.scaleX(),
+          y: (pointer.y - world.y()) / world.scaleY()
+        };
+        
+        const snappedX = snap(worldPoint.x);
+        const snappedY = snap(worldPoint.y);
+        
+        if (selectedType === 'wall') {
+          createWallGroup(snappedX, snappedY);
+        } else {
+          createObjectGroup(selectedType, snappedX, snappedY, selectedColor);
+        }
+        
+        // Auto-minimize sidebar on mobile
+        if (window.innerWidth <= 1024) {
+          document.getElementById('sidebar').classList.remove('open');
+        }
+      }
+    });
+
+    // Enhanced pan/zoom controls
+    function setPanMode(on) {
+      isPanning = on;
+      stage.container().style.cursor = on ? 'grab' : 'default';
+      world.draggable(on);
+    }
+
+    $('#handTool').onclick = () => {
+      setPanMode(true);
+      $('#handTool').classList.add('active');
+      $('#selectTool').classList.remove('active');
+      $('#rotateTool').classList.remove('active');
+      rotationMode = false;
+    };
+
+    $('#selectTool').onclick = () => {
+      setPanMode(false);
+      $('#selectTool').classList.add('active');
+      $('#handTool').classList.remove('active');
+      $('#rotateTool').classList.remove('active');
+      rotationMode = false;
+    };
+
+    $('#rotateTool').onclick = () => {
+      rotationMode = !rotationMode;
+      $('#rotateTool').classList.toggle('active', rotationMode);
+      $('#handTool').classList.remove('active');
+      $('#selectTool').classList.remove('active');
+      setPanMode(false);
+      
+      if (rotationMode) {
+        stage.container().style.cursor = 'crosshair';
+      } else {
+        stage.container().style.cursor = 'default';
+      }
+    };
+
+    // Rotation buttons
+    $('#rotateLeft').onclick = () => rotateObjects(-45);
+    $('#rotateRight').onclick = () => rotateObjects(45);
+
+    // Enhanced keyboard controls
+    document.addEventListener('keydown', (e) => {
+      // Prevent default for our shortcuts
+      if (['Space', 'Delete', 'KeyG', 'Equal', 'Minus', 'Digit0', 'KeyR', 'KeyQ', 'KeyE'].includes(e.code) ||
+          (e.ctrlKey && ['KeyZ', 'KeyY', 'KeyS'].includes(e.code))) {
+        e.preventDefault();
+      }
+
+      if (e.code === 'Space' && !isSpacePressed) {
+        isSpacePressed = true;
+        stage.container().style.cursor = 'grab';
+        world.draggable(true);
+      }
+      
+      if (e.code === 'Delete' && transformer.nodes().length) {
+        saveState();
+        transformer.nodes().forEach(node => {
+          if (node.className === 'Group') {
+            const shapeType = node.children[0]?.className;
+            if (shapeType === 'Circle' || shapeType === 'Rect' || shapeType === 'Ellipse') {
+              tables--;
+              seats -= Number(seatInput.value || 0);
+            } else if (shapeType === 'Rect' && node.children[0].fill() === 'transparent') {
+              stations--;
+            }
+            node.destroy();
+          }
+        });
+        transformer.nodes([]);
+        updateStats();
+        worldLayer.batchDraw();
+      }
+      
+      // Toggle grid
+      if (e.code === 'KeyG') {
+        gridToggle.checked = !gridToggle.checked;
+        drawGrid();
+      }
+      
+      // Zoom controls
+      if (e.code === 'Equal' || e.code === 'NumpadAdd') {
+        zoomIn();
+      }
+      if (e.code === 'Minus' || e.code === 'NumpadSubtract') {
+        zoomOut();
+      }
+      if (e.code === 'Digit0' || e.code === 'Numpad0') {
+        resetZoom();
+      }
+      
+      // Undo/Redo
+      if (e.ctrlKey && e.code === 'KeyZ') {
+        undo();
+      }
+      if (e.ctrlKey && e.code === 'KeyY') {
+        redo();
+      }
+      
+      // Save
+      if (e.ctrlKey && e.code === 'KeyS') {
+        save();
+      }
+      
+      // Rotate tool
+      if (e.code === 'KeyR') {
+        $('#rotateTool').click();
+      }
+      
+      // Rotate left/right
+      if (e.code === 'KeyQ') {
+        rotateObjects(-45);
+      }
+      if (e.code === 'KeyE') {
+        rotateObjects(45);
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' && isSpacePressed) {
+        isSpacePressed = false;
+        stage.container().style.cursor = 'default';
+        world.draggable(isPanning);
+      }
+    });
+
+    // Enhanced zoom with smooth transitions
+    function smoothZoom(newScale, pointer = null) {
+      const oldScale = world.scaleX();
+      
+      if (pointer) {
+        const mousePointTo = {
+          x: (pointer.x - world.x()) / oldScale,
+          y: (pointer.y - world.y()) / oldScale,
+        };
+        
+        world.scale({ x: newScale, y: newScale });
+        const newPos = {
+          x: pointer.x - mousePointTo.x * newScale,
+          y: pointer.y - mousePointTo.y * newScale
+        };
+        world.position(newPos);
+      } else {
+        world.scale({ x: newScale, y: newScale });
+      }
+      
+      worldLayer.batchDraw();
+      guideLayer.batchDraw();
+      drawGrid();
+      updateMinimap();
+      updateZoomDisplay();
+    }
+
+    stage.on('wheel', (e) => {
+      e.evt.preventDefault();
+      const oldScale = world.scaleX();
+      const pointer = stage.getPointerPosition();
+      const scaleBy = 1.08;
+      const newScale = e.evt.deltaY > 0 ? 
+        Math.max(oldScale / scaleBy, 0.1) : 
+        Math.min(oldScale * scaleBy, 5);
+      
+      smoothZoom(newScale, pointer);
+    });
+
+    function zoomIn() {
+      const newScale = Math.min(world.scaleX() * 1.2, 5);
+      smoothZoom(newScale);
+    }
+
+    function zoomOut() {
+      const newScale = Math.max(world.scaleX() / 1.2, 0.1);
+      smoothZoom(newScale);
+    }
+
+    function resetZoom() {
+      world.scale({ x: 1, y: 1 });
+      world.position({ x: 50, y: 50 });
+      worldLayer.batchDraw();
+      drawGrid();
+      updateMinimap();
+      updateZoomDisplay();
+    }
+
+    $('#zoomIn').onclick = zoomIn;
+    $('#zoomOut').onclick = zoomOut;
+    $('#resetZoom').onclick = resetZoom;
+
+    // Enhanced minimap with interaction
+    function updateMinimap() {
+      const minimap = $('#minimap');
+      const viewport = $('#minimapViewport');
+      
+      if (!minimap || !viewport) return;
+      
+      const scaleX = minimap.clientWidth / (WORLD_SIZE / 10);
+      const scaleY = minimap.clientHeight / (WORLD_SIZE / 10);
+      
+      const viewportWidth = stage.width() / world.scaleX() * scaleX;
+      const viewportHeight = stage.height() / world.scaleY() * scaleY;
+      
+      viewport.style.width = `${Math.max(viewportWidth, 4)}px`;
+      viewport.style.height = `${Math.max(viewportHeight, 4)}px`;
+      
+      const viewportX = (-world.x() / world.scaleX()) * scaleX + (minimap.clientWidth / 2);
+      const viewportY = (-world.y() / world.scaleY()) * scaleY + (minimap.clientHeight / 2);
+      
+      viewport.style.left = `${Math.max(0, Math.min(viewportX, minimap.clientWidth - viewportWidth))}px`;
+      viewport.style.top = `${Math.max(0, Math.min(viewportY, minimap.clientHeight - viewportHeight))}px`;
+    }
+
+    // Enhanced UI event handlers
+    document.getElementById('palette').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-type]');
+      if (!btn) return;
+      
+      document.querySelectorAll('#palette .object-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedType = btn.dataset.type;
+      
+      if (window.innerWidth <= 1024) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    });
+
+    document.getElementById('colorRow').addEventListener('click', (e) => {
+      const c = e.target.closest('[data-color]');
+      if (!c) return;
+      selectedColor = c.dataset.color;
+      
+      // Visual feedback
+      document.querySelectorAll('#colorRow button').forEach(btn => btn.style.transform = 'scale(1)');
+      c.style.transform = 'scale(1.2)';
+    });
+
+    // Sidebar controls
+    document.getElementById('toggleSidebar').onclick = () => {
+      document.getElementById('sidebar').classList.toggle('open');
+    };
+
+    document.getElementById('toggleCollapse').addEventListener('click', () => {
+      sidebarCollapsed = !sidebarCollapsed;
+      const sidebar = document.getElementById('sidebar');
+      const toggleIcon = document.getElementById('toggleCollapse').querySelector('i');
+      
+      if (sidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        toggleIcon.classList.remove('fa-chevron-left');
+        toggleIcon.classList.add('fa-chevron-right');
+      } else {
+        sidebar.classList.remove('collapsed');
+        toggleIcon.classList.remove('fa-chevron-right');
+        toggleIcon.classList.add('fa-chevron-left');
+      }
+    });
+
+    // Enhanced grid controls
+    gridSize.addEventListener('change', () => {
+      GRID_SIZE = Number(gridSize.value) || 20;
+      drawGrid();
+    });
+
+    gridOpacity.addEventListener('input', () => {
+      drawGrid();
+    });
+
+    gridToggle.addEventListener('change', () => {
+      drawGrid();
+    });
+
+    // Enhanced rotation controls
+    rotateEnable.addEventListener('change', () => {
+      transformer.rotateEnabled(rotateEnable.checked);
+      guideLayer.batchDraw();
+    });
+
+    rotationSnapToggle.addEventListener('change', () => {
+      updateRotationSnaps();
+    });
+
+    snapAngle.addEventListener('change', () => {
+      updateRotationSnaps();
+    });
+
+    function updateRotationSnaps() {
+      if (rotationSnapToggle.checked) {
+        const angle = Number(snapAngle.value) || 45;
+        const snaps = [];
+        for (let i = 0; i < 360; i += angle) {
+          snaps.push(i);
+        }
+        transformer.rotationSnaps(snaps);
+        transformer.rotationSnapTolerance(8);
+      } else {
+        transformer.rotationSnaps([]);
+      }
+      guideLayer.batchDraw();
+    }
+
+    // Enhanced save/load system
+    function serialize() {
+      return {
+        version: '2.0',
+        objects: world.children.map(child => {
+          if (child.className === 'Group') {
+            const shape = child.children[0];
+            const label = child.children[1];
+            
+            if (shape.className === 'Line') {
+              return {
+                type: 'wall',
+                x: child.x(),
+                y: child.y(),
+                rotation: child.rotation(),
+                scaleX: child.scaleX(),
+                scaleY: child.scaleY(),
+                points: shape.points(),
+                stroke: shape.stroke(),
+                strokeWidth: shape.strokeWidth()
+              };
+            } else {
+              return {
+                type: getObjectType(shape),
+                x: child.x(),
+                y: child.y(),
+                rotation: child.rotation(),
+                scaleX: child.scaleX(),
+                scaleY: child.scaleY(),
+                color: shape.fill(),
+                label: label?.text(),
+                seats: child.children[2]?.text()?.match(/\d+/)?.[0] || 0
+              };
+            }
+          }
+        }).filter(Boolean),
+        settings: {
+          gridSize: GRID_SIZE,
+          gridOpacity: gridOpacity.value,
+          showGrid: gridToggle.checked,
+          snapToGrid: snapToggle.checked,
+          rotationEnabled: rotateEnable.checked,
+          rotationSnap: rotationSnapToggle.checked,
+          snapAngle: snapAngle.value
+        }
+      };
+    }
+
+    function getObjectType(shape) {
+      if (shape.className === 'Circle') return 'circle';
+      if (shape.className === 'Ellipse') return 'oval';
+      if (shape.className === 'Rect') {
+        if (shape.fill() === 'transparent') {
+          if (shape.stroke() === '#22c55e') return 'servicestation';
+          if (shape.stroke() === '#f97316') return 'preparea';
+          if (shape.stroke() === '#8b5cf6') return 'stagearea';
+        }
+        if (shape.width() === shape.height()) return 'square';
+        if (shape.width() > shape.height() * 1.5) return 'bar';
+        return 'rectangle';
+      }
+      return 'rectangle';
+    }
+
+    function deserialize(data) {
+      world.destroyChildren();
+      tables = 0;
+      seats = 0;
+      stations = 0;
+      
+      // Apply settings if available
+      if (data.settings) {
+        GRID_SIZE = data.settings.gridSize || 20;
+        gridSize.value = GRID_SIZE;
+        gridOpacity.value = data.settings.gridOpacity || 0.3;
+        gridToggle.checked = data.settings.showGrid !== false;
+        snapToggle.checked = data.settings.snapToGrid !== false;
+        rotateEnable.checked = data.settings.rotationEnabled !== false;
+        rotationSnapToggle.checked = data.settings.rotationSnap !== false;
+        snapAngle.value = data.settings.snapAngle || 45;
+      }
+      
+      // Create objects
+      (data.objects || data).forEach(obj => {
+        if (obj.type === 'wall') {
+          const group = new Konva.Group({
+            x: obj.x,
+            y: obj.y,
+            rotation: obj.rotation || 0,
+            scaleX: obj.scaleX || 1,
+            scaleY: obj.scaleY || 1,
+            draggable: true
+          });
+          
+          const wall = new Konva.Line({
+            points: obj.points,
+            stroke: obj.stroke,
+            strokeWidth: obj.strokeWidth,
+            lineCap: 'round',
+            lineJoin: 'round'
+          });
+          
+          group.add(wall);
+          group.cache({ pixelRatio: 1 });
+          
+          group.on('dragstart transformstart', () => {
+            group.clearCache();
+            group.opacity(0.85);
+          });
+          group.on('dragmove', () => {
+            const p = group.position();
+            group.position({ x: snap(p.x), y: snap(p.y) });
+          });
+          group.on('dragend transformend', () => {
+            group.opacity(1);
+            group.cache({ pixelRatio: 1 });
+            worldLayer.batchDraw();
+          });
+          group.on('mousedown', (e) => {
+            e.cancelBubble = true;
+            transformer.nodes([group]);
+            guideLayer.batchDraw();
+          });
+          
+          world.add(group);
+        } else {
+          // Set form values for object creation
+          if (obj.seats) seatInput.value = obj.seats;
+          if (obj.label) labelInput.value = obj.label;
+          
+          const group = createObjectGroup(obj.type, obj.x, obj.y, obj.color || selectedColor);
+          group.rotation(obj.rotation || 0);
+          group.scale({ x: obj.scaleX || 1, y: obj.scaleY || 1 });
+        }
+      });
+      
+      worldLayer.batchDraw();
+      updateStats();
+      updateRotationSnaps();
+      drawGrid();
+    }
+
+    function save() {
+      const data = serialize();
+      localStorage.setItem('avelaLayout', JSON.stringify(data));
+      toast('Layout saved successfully!', 'success');
+    }
+
+    function load() {
+      const raw = localStorage.getItem('avelaLayout');
+      if (!raw) return toast('No saved layout found', 'warning');
+      
+      try {
+        const data = JSON.parse(raw);
+        deserialize(data);
+        toast('Layout loaded successfully!', 'success');
+      } catch (e) {
+        toast('Error loading layout', 'error');
+      }
+    }
+
+    function undo() {
+      if (undoStack.length === 0) return;
+      redoStack.push(serialize());
+      const state = undoStack.pop();
+      deserialize(state);
+    }
+
+    function redo() {
+      if (redoStack.length === 0) return;
+      undoStack.push(serialize());
+      const state = redoStack.pop();
+      deserialize(state);
+    }
+
+    // Button event handlers
+    $('#saveBtn').onclick = save;
+    $('#loadBtn').onclick = load;
+    $('#undoBtn').onclick = undo;
+    $('#redoBtn').onclick = redo;
+
+    $('#clearBtn').onclick = () => {
+      if (!confirm('Are you sure you want to clear the entire design?')) return;
+      saveState();
+      world.destroyChildren();
+      tables = 0;
+      seats = 0;
+      stations = 0;
+      updateStats();
+      worldLayer.batchDraw();
+      toast('Layout cleared', 'info');
+    };
+
+    $('#exportBtn').onclick = () => {
+      const wasVisible = bgLayer.visible();
+      bgLayer.hide();
+      
+      // Get bounds of all objects
+      const objects = world.children;
+      if (objects.length === 0) {
+        toast('No objects to export', 'warning');
+        return;
+      }
+      
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      objects.forEach(obj => {
+        const bounds = obj.getClientRect();
+        minX = Math.min(minX, bounds.x);
+        minY = Math.min(minY, bounds.y);
+        maxX = Math.max(maxX, bounds.x + bounds.width);
+        maxY = Math.max(maxY, bounds.y + bounds.height);
+      });
+      
+      const padding = 50;
+      const exportArea = {
+        x: minX - padding,
+        y: minY - padding,
+        width: maxX - minX + padding * 2,
+        height: maxY - minY + padding * 2
+      };
+      
+      const uri = stage.toDataURL({
+        ...exportArea,
+        pixelRatio: 2
+      });
+      
+      bgLayer.visible(wasVisible);
+      
+      const a = document.createElement('a');
+      a.download = `avela-layout-${new Date().toISOString().slice(0, 10)}.png`;
+      a.href = uri;
+      a.click();
+      
+      toast('Layout exported successfully!', 'success');
+    };
+
+    // Shortcuts panel
+    function toggleShortcuts() {
+      const panel = document.getElementById('shortcutsPanel');
+      panel.classList.toggle('active');
+    }
+
+    $('#shortcutsBtn').onclick = toggleShortcuts;
+
+    // Enhanced toast system
+    function toast(msg, type = 'info') {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      
+      const colors = {
+        success: 'rgba(34, 197, 94, 0.9)',
+        error: 'rgba(239, 68, 68, 0.9)',
+        warning: 'rgba(245, 158, 11, 0.9)',
+        info: 'rgba(59, 130, 246, 0.9)'
+      };
+      
+      t.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${colors[type]};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 12px;
+        z-index: 1000;
+        font-weight: 500;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        backdrop-filter: blur(8px);
+      `;
+      
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+
+    // Initialize
+    window.addEventListener('resize', sizeStageToContainer);
+    sizeStageToContainer();
+    updateRotationSnaps();
+    updateLoadProgress(100);
+
+    // Update grid when panning
+    world.on('dragmove', () => {
+      drawGrid();
+      updateMinimap();
+    });
+
+    // Click outside to deselect
+    stage.on('click', (e) => {
+      if (e.target === stage) {
+        transformer.nodes([]);
+        guideLayer.batchDraw();
+        updateRotationInfo();
+      }
+    });
+
+    // Update rotation info when transformer changes
+    transformer.on('transform', () => {
+      updateRotationInfo();
+    });
+
+    updateLoadProgress(100);
+  </script>
+</body>
+</html>
