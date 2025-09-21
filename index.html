@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Avela - Professional Restaurant Layout Designer</title>
+  <link rel="icon" type="image/svg+xml" href="avela-logo.svg">
+  <link rel="apple-touch-icon" href="avela-logo.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    * { box-sizing: border-box; }
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-glass: rgba(15,23,42,0.85);
+      --border-glass: rgba(255,255,255,0.08);
+      --accent-blue: #3b82f6;
+      --accent-blue-hover: #2563eb;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .glass {
+      background: var(--bg-glass);
+      backdrop-filter: saturate(120%) blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: 12px;
+    }
+
+    .btn {
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none;
+      border: none;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      background: rgba(30,41,59,0.9);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-blue-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: white;
+    }
+
+    .sidebar {
+      width: 320px;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    .sidebar.collapsed {
+      width: 60px;
+    }
+
+    .grid-toggle {
+      accent-color: var(--accent-blue);
+    }
+
+    .stat {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(30,41,59,0.65);
+    }
+
+    .canvas-wrap {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-secondary);
+    }
+
+    .toolbar {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .pill {
+      padding: 8px 12px;
+      border-radius: 20px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .pill:hover {
+      background: rgba(30,41,59,0.9);
+      transform: translateY(-1px);
+    }
+
+    .pill.active {
+      background: rgba(59,130,246,0.3);
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .object-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 70px;
+      height: 70px;
+      border-radius: 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-glass);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .object-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(30,41,59,0.9);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .object-btn.active {
+      border-color: var(--accent-blue);
+      background: rgba(30,58,138,0.3);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+
+    .object-btn i {
+      font-size: 20px;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+
+    .object-btn span {
+      font-size: 10px;
+      text-align: center;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .object-palette {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .sidebar-content {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar.collapsed .sidebar-content {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar.collapsed .object-palette {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sidebar.collapsed .object-btn {
+      width: 45px;
+      height: 45px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+    }
+
+    .sidebar.collapsed .object-btn i {
+      font-size: 16px;
+      margin-bottom: 0;
+    }
+
+    .sidebar.collapsed .object-btn span {
+      display: none;
+    }
+
+    .minimap {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      width: 150px;
+      height: 100px;
+      background: var(--bg-glass);
+      border-radius: 8px;
+      border: 1px solid var(--border-glass);
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .minimap-viewport {
+      position: absolute;
+      border: 2px solid var(--accent-blue);
+      background: rgba(59,130,246,0.2);
+      pointer-events: none;
+      border-radius: 2px;
+    }
+
+    .loading-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-blue), #8b5cf6);
+      width: 0%;
+      transition: width 0.5s ease;
+      z-index: 1000;
+      border-radius: 0 2px 2px 0;
+    }
+
+    .zoom-controls {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 10;
+    }
+
+    .zoom-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .zoom-btn:hover {
+      background: rgba(30,41,59,0.9);
+      transform: translateY(-1px);
+    }
+
+    .zoom-display {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .layers-panel {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      width: 200px;
+      max-height: 300px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: 8px;
+      z-index: 10;
+      display: none;
+    }
+
+    .layers-panel.open {
+      display: block;
+    }
+
+    .layer-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-glass);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .layer-item:hover {
+      background: rgba(30,41,59,0.5);
+    }
+
+    .layer-item.active {
+      background: rgba(59,130,246,0.2);
+      border-left: 3px solid var(--accent-blue);
+    }
+
+    .layer-visibility {
+      margin-right: 8px;
+      color: var(--text-secondary);
+    }
+
+    .layer-name {
+      flex: 1;
+      font-size: 13px;
+    }
+
+    .layer-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .layer-controls i {
+      font-size: 12px;
+      padding: 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .layer-controls i:hover {
+      background: rgba(30,41,59,0.5);
+    }
+
+    .tooltip {
+      position: absolute;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-glass);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text-primary);
+      z-index: 1000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .tooltip.show {
+      opacity: 1;
+    }
+
+    .keyboard-shortcuts {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: 12px;
+      padding: 20px;
+      z-index: 1000;
+      display: none;
+      max-width: 400px;
+    }
+
+    .keyboard-shortcuts.open {
+      display: block;
+    }
+
+    .shortcut-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .shortcut-keys {
+      display: flex;
+      gap: 4px;
+    }
+
+    .key {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-glass);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-family: monospace;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        bottom: 0;
+        z-index: 50;
+        transition: left 0.3s ease;
+        width: 300px;
+      }
+      .sidebar.open {
+        left: 0;
+      }
+      .object-palette {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .object-btn {
+        width: 65px;
+        height: 65px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .object-palette {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .object-btn {
+        width: 60px;
+        height: 60px;
+      }
+      .object-btn i {
+        font-size: 16px;
+      }
+      .object-btn span {
+        font-size: 10px;
+      }
+      .minimap {
+        width: 120px;
+        height: 80px;
+      }
+      .zoom-controls {
+        right: 8px;
+        top: 8px;
+      }
+    }
+
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--border-glass);
+      border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* Animation classes */
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-in-left {
+      animation: slideInLeft 0.3s ease-out;
+    }
+
+    @keyframes slideInLeft {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <div class="loading-bar" id="loadingBar"></div>
+
+  <!-- Tooltip -->
+  <div class="tooltip" id="tooltip"></div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div class="keyboard-shortcuts" id="shortcutsModal">
+    <h3 class="text-lg font-semibold mb-4">Keyboard Shortcuts</h3>
+    <div class="shortcut-item">
+      <span>Pan Tool</span>
+      <div class="shortcut-keys">
+        <span class="key">Space</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Select Tool</span>
+      <div class="shortcut-keys">
+        <span class="key">V</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Delete</span>
+      <div class="shortcut-keys">
+        <span class="key">Del</span>
+        <span class="key">⌫</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Undo</span>
+      <div class="shortcut-keys">
+        <span class="key">Ctrl</span>
+        <span class="key">Z</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Redo</span>
+      <div class="shortcut-keys">
+        <span class="key">Ctrl</span>
+        <span class="key">Y</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Copy</span>
+      <div class="shortcut-keys">
+        <span class="key">Ctrl</span>
+        <span class="key">C</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Paste</span>
+      <div class="shortcut-keys">
+        <span class="key">Ctrl</span>
+        <span class="key">V</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Duplicate</span>
+      <div class="shortcut-keys">
+        <span class="key">Ctrl</span>
+        <span class="key">D</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Select All</span>
+      <div class="shortcut-keys">
+        <span class="key">Ctrl</span>
+        <span class="key">A</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Zoom In</span>
+      <div class="shortcut-keys">
+        <span class="key">Ctrl</span>
+        <span class="key">+</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Zoom Out</span>
+      <div class="shortcut-keys">
+        <span class="key">Ctrl</span>
+        <span class="key">-</span>
+      </div>
+    </div>
+    <div class="shortcut-item">
+      <span>Reset Zoom</span>
+      <div class="shortcut-keys">
+        <span class="key">Ctrl</span>
+        <span class="key">0</span>
+      </div>
+    </div>
+  </div>
+
+  <header class="glass p-3 md:p-4 sticky top-0 z-20 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <img src="avela-logo.svg" alt="Avela Logo" class="h-10">
+      <div class="hidden md:block">
+        <h1 class="text-xl font-bold">Avela Designer</h1>
+        <p class="text-xs text-gray-400">Professional Restaurant Layout Tool</p>
+      </div>
+    </div>
+    <div class="hidden md:flex items-center gap-3">
+      <div class="stat">
+        <i class="fas fa-chair text-amber-400"></i>
+        <div>
+          <div class="text-xs text-gray-400">Seats</div>
+          <div id="statSeats" class="font-bold">0</div>
+        </div>
+      </div>
+      <div class="stat">
+        <i class="fas fa-table text-blue-400"></i>
+        <div>
+          <div class="text-xs text-gray-400">Tables</div>
+          <div id="statTables" class="font-bold">0</div>
+        </div>
+      </div>
+      <div class="stat">
+        <i class="fas fa-utensils text-emerald-400"></i>
+        <div>
+          <div class="text-xs text-gray-400">Stations</div>
+          <div id="statStations" class="font-bold">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="toggleSidebar" class="btn hidden md:inline-flex">
+        <i class="fas fa-bars"></i>
+      </button>
+      <button id="toggleCollapse" class="btn text-purple-300" title="Collapse Menu">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button id="undoBtn" class="btn text-gray-300" title="Undo (Ctrl+Z)">
+        <i class="fas fa-undo"></i>
+        <span class="hidden md:inline">Undo</span>
+      </button>
+      <button id="redoBtn" class="btn text-gray-300" title="Redo (Ctrl+Y)">
+        <i class="fas fa-redo"></i>
+        <span class="hidden md:inline">Redo</span>
+      </button>
+      <button id="clearBtn" class="btn text-red-300" title="Clear All">
+        <i class="fas fa-trash"></i>
+        <span class="hidden md:inline">Clear</span>
+      </button>
+      <button id="exportBtn" class="btn text-sky-300" title="Export Layout">
+        <i class="fas fa-download"></i>
+        <span class="hidden md:inline">Export</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+    <aside id="sidebar" class="sidebar glass p-4 overflow-y-auto custom-scrollbar">
+      <h2 class="font-semibold text-lg mb-3 flex items-center gap-2 sidebar-content">
+        <i class="fas fa-object-group text-blue-400"></i> Elements
+      </h2>
+
+      <div class="object-palette" id="palette">
+        <button class="object-btn active" data-type="circle" title="Round Table">
+          <i class="fas fa-circle"></i>
+          <span class="sidebar-content">Round</span>
+        </button>
+        <button class="object-btn" data-type="square" title="Square Table">
+          <i class="fas fa-square"></i>
+          <span class="sidebar-content">Square</span>
+        </button>
+        <button class="object-btn" data-type="rectangle" title="Rectangular Table">
+          <i class="fas fa-rectangle-wide"></i>
+          <span class="sidebar-content">Rect</span>
+        </button>
+        <button class="object-btn" data-type="oval" title="Oval Table">
+          <i class="fas fa-ellipsis-h"></i>
+          <span class="sidebar-content">Oval</span>
+        </button>
+        <button class="object-btn" data-type="chair" title="Chair">
+          <i class="fas fa-chair"></i>
+          <span class="sidebar-content">Chair</span>
+        </button>
+        <button class="object-btn" data-type="sofa" title="Sofa/Bench">
+          <i class="fas fa-couch"></i>
+          <span class="sidebar-content">Sofa</span>
+        </button>
+        <button class="object-btn" data-type="bar" title="Bar Counter">
+          <i class="fas fa-chart-bar"></i>
+          <span class="sidebar-content">Bar</span>
+        </button>
+        <button class="object-btn" data-type="servicestation" title="Service Station">
+          <i class="fas fa-concierge-bell"></i>
+          <span class="sidebar-content">Station</span>
+        </button>
+        <button class="object-btn" data-type="preparea" title="Prep Area">
+          <i class="fas fa-utensils"></i>
+          <span class="sidebar-content">Prep</span>
+        </button>
+        <button class="object-btn" data-type="stagearea" title="Stage Area">
+          <i class="fas fa-star"></i>
+          <span class="sidebar-content">Stage</span>
+        </button>
+        <button class="object-btn" data-type="wall" title="Wall">
+          <i class="fas fa-grip-lines"></i>
+          <span class="sidebar-content">Wall</span>
+        </button>
+        <button class="object-btn" data-type="door" title="Door">
+          <i class="fas fa-door-open"></i>
+          <span class="sidebar-content">Door</span>
+        </button>
+        <button class="object-btn" data-type="window" title="Window">
+          <i class="fas fa-window-maximize"></i>
+          <span class="sidebar-content">Window</span>
+        </button>
+        <button class="object-btn" data-type="column" title="Column">
+          <i class="fas fa-columns"></i>
+          <span class="sidebar-content">Column</span>
+        </button>
+        <button class="object-btn" data-type="plant" title="Plant/Decoration">
+          <i class="fas fa-leaf"></i>
+          <span class="sidebar-content">Plant</span>
+        </button>
+        <button class="object-btn" data-type="cashier" title="Cash Register">
+          <i class="fas fa-cash-register"></i>
+          <span class="sidebar-content">Cashier</span>
+        </button>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-3">
+            <label class="block text-sm">
+              <span class="text-gray-300">Seats</span>
+              <input id="seatInput" type="number" value="4" min="1" max="12" class="w-full mt-1 bg-gray-800 border border-gray-700 rounded p-2 text-white">
+            </label>
+            <label class="block text-sm">
+              <span class="text-gray-300">Label</span>
+              <input id="labelInput" type="text" placeholder="Table A1" class="w-full mt-1 bg-gray-800 border border-gray-700 rounded p-2 text-white">
+            </label>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm">Snap to grid</span>
+              <input id="snapToggle" type="checkbox" class="grid-toggle" checked>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm">Show grid</span>
+              <input id="gridToggle" type="checkbox" class="grid-toggle" checked>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm">Enable Rotation</span>
+              <input id="rotateEnable" type="checkbox" class="grid-toggle" checked>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm">Rotation Snap</span>
+              <input id="rotationSnapToggle" type="checkbox" class="grid-toggle" checked>
+            </div>
+          </div>
+
+          <label class="block text-sm">
+            <span class="text-gray-300">Snap Angle</span>
+            <input id="snapAngle" type="number" value="45" min="1" max="180" class="w-full mt-1 bg-gray-800 border border-gray-700 rounded p-2 text-white">
+          </label>
+
+          <div class="space-y-2">
+            <span class="text-sm text-gray-300">Grid Size</span>
+            <div class="grid grid-cols-3 gap-2" id="gridSizeControls">
+              <button class="pill" data-size="10">10px</button>
+              <button class="pill active" data-size="20">20px</button>
+              <button class="pill" data-size="40">40px</button>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <span class="text-sm text-gray-300">Colors</span>
+            <div class="grid grid-cols-5 gap-2" id="colorRow">
+              <button class="pill" data-color="#F59E0B" style="background:#F59E0B" title="Orange"></button>
+              <button class="pill" data-color="#3B82F6" style="background:#3B82F6" title="Blue"></button>
+              <button class="pill" data-color="#10B981" style="background:#10B981" title="Green"></button>
+              <button class="pill" data-color="#EF4444" style="background:#EF4444" title="Red"></button>
+              <button class="pill" data-color="#8B5CF6" style="background:#8B5CF6" title="Purple"></button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-2">
+            <button id="saveBtn" class="btn btn-success">
+              <i class="fas fa-save"></i>Save
+            </button>
+            <button id="loadBtn" class="btn btn-warning">
+              <i class="fas fa-folder-open"></i>Load
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button id="copyBtn" class="btn text-blue-300">
+              <i class="fas fa-copy"></i>Copy
+            </button>
+            <button id="pasteBtn" class="btn text-green-300">
+              <i class="fas fa-paste"></i>Paste
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button id="duplicateBtn" class="btn text-purple-300">
+              <i class="fas fa-clone"></i>Duplicate
+            </button>
+            <button id="layersBtn" class="btn text-cyan-300">
+              <i class="fas fa-layer-group"></i>Layers
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button id="alignLeftBtn" class="btn text-gray-300">
+              <i class="fas fa-align-left"></i>Align L
+            </button>
+            <button id="alignRightBtn" class="btn text-gray-300">
+              <i class="fas fa-align-right"></i>Align R
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button id="alignTopBtn" class="btn text-gray-300">
+              <i class="fas fa-align-top"></i>Align T
+            </button>
+            <button id="alignBottomBtn" class="btn text-gray-300">
+              <i class="fas fa-align-bottom"></i>Align B
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-3 md:p-4 relative">
+      <div id="canvasWrap" class="canvas-wrap h-[calc(100vh-160px)] glass">
+        <div class="toolbar">
+          <button id="selectTool" class="pill active" title="Select Tool (V)">
+            <i class="fas fa-mouse-pointer"></i>
+          </button>
+          <button id="handTool" class="pill" title="Pan Tool (Space)">
+            <i class="fas fa-hand-paper"></i>
+          </button>
+          <button id="zoomToFit" class="pill" title="Zoom to Fit">
+            <i class="fas fa-expand-arrows-alt"></i>
+          </button>
+          <button id="shortcutsBtn" class="pill" title="Keyboard Shortcuts">
+            <i class="fas fa-keyboard"></i>
+          </button>
+        </div>
+
+        <div class="zoom-controls">
+          <button id="zoomIn" class="zoom-btn" title="Zoom In (Ctrl+Plus)">
+            <i class="fas fa-search-plus"></i>
+          </button>
+          <div id="zoomDisplay" class="zoom-display">100%</div>
+          <button id="zoomOut" class="zoom-btn" title="Zoom Out (Ctrl+Minus)">
+            <i class="fas fa-search-minus"></i>
+          </button>
+          <button id="resetZoom" class="zoom-btn" title="Reset Zoom (Ctrl+0)">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+
+        <div class="minimap" id="minimap">
+          <div class="minimap-viewport" id="minimapViewport"></div>
+        </div>
+
+        <div id="stage" style="width:100%;height:100%"></div>
+      </div>
+
+      <!-- Layers Panel -->
+      <div class="layers-panel" id="layersPanel">
+        <div class="layer-item active" data-layer="world">
+          <i class="fas fa-eye layer-visibility"></i>
+          <span class="layer-name">Main Layout</span>
+          <div class="layer-controls">
+            <i class="fas fa-lock" title="Lock"></i>
+            <i class="fas fa-trash" title="Delete"></i>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Show loading progress
+    const loadingBar = document.getElementById('loadingBar');
+    const updateLoadProgress = (progress) => {
+      loadingBar.style.width = `${progress}%`;
+      if (progress >= 100) setTimeout(() => loadingBar.style.opacity = 0, 300);
+    };
+    updateLoadProgress(20);
+
+    // --- PERFORMANCE OPTIMIZATIONS ---
+    Konva.pixelRatio = 1;
+    Konva.autoDrawEnabled = false;
+    const GRID_SIZE = 20;
+    const WORLD_SIZE = 1000000;
+    let selectedType = 'circle';
+    let selectedColor = '#F59E0B';
+    let isPanning = false;
+    let isSpacePressed = false;
+    let sidebarCollapsed = false;
+    let undoStack = [];
+    let redoStack = [];
+    let clipboard = [];
+    let currentLayer = 'world';
+
+    // --- STAGE/LAYERS SETUP ---
+    const stageContainer = document.getElementById('stage');
+    function sizeStageToContainer(){
+      const rect = stageContainer.getBoundingClientRect();
+      stage.width(rect.width);
+      stage.height(rect.height);
+      drawGrid();
+      updateMinimap();
+    }
+
+    const stage = new Konva.Stage({
+      container: 'stage',
+      width: 10,
+      height: 10,
+      draggable: false
+    });
+
+    const bgLayer = new Konva.FastLayer();
+    const worldLayer = new Konva.Layer({
+      hitGraphEnabled: true,
+      clearBeforeDraw: true
+    });
+    const guideLayer = new Konva.Layer({ listening: false });
+    stage.add(bgLayer, worldLayer, guideLayer);
+
+    // --- ENHANCED GRID SYSTEM ---
+    let currentGridSize = GRID_SIZE;
+    function drawGrid(){
+      bgLayer.destroyChildren();
+      if (!document.getElementById('gridToggle').checked) {
+        bgLayer.batchDraw();
+        return;
+      }
+
+      const scale = world.scaleX();
+      const stageRect = stage.getClientRect();
+
+      const visibleArea = {
+        x: -world.x() / scale,
+        y: -world.y() / scale,
+        width: stageRect.width / scale,
+        height: stageRect.height / scale
+      };
+
+      const startX = Math.floor(visibleArea.x / currentGridSize) * currentGridSize;
+      const endX = Math.ceil((visibleArea.x + visibleArea.width) / currentGridSize) * currentGridSize;
+      const startY = Math.floor(visibleArea.y / currentGridSize) * currentGridSize;
+      const endY = Math.ceil((visibleArea.y + visibleArea.height) / currentGridSize) * currentGridSize;
+
+      const lines = [];
+
+      // Main grid lines
+      for(let x = startX; x <= endX; x += currentGridSize){
+        const screenX = world.x() + x * scale;
+        const opacity = x % (currentGridSize * 5) === 0 ? 0.2 : 0.08;
+        lines.push(new Konva.Line({
+          points: [screenX, 0, screenX, stage.height()],
+          stroke: 'rgba(59,130,246,' + opacity + ')',
+          strokeWidth: 1,
+          listening: false
+        }));
+      }
+
+      for(let y = startY; y <= endY; y += currentGridSize){
+        const screenY = world.y() + y * scale;
+        const opacity = y % (currentGridSize * 5) === 0 ? 0.2 : 0.08;
+        lines.push(new Konva.Line({
+          points: [0, screenY, stage.width(), screenY],
+          stroke: 'rgba(59,130,246,' + opacity + ')',
+          strokeWidth: 1,
+          listening: false
+        }));
+      }
+
+      bgLayer.add(...lines);
+      bgLayer.batchDraw();
+    }
+
+    // --- WORLD GROUP ---
+    const world = new Konva.Group({ x: 50, y: 50, draggable: false });
+    worldLayer.add(world);
+
+    // Enhanced transformer with better rotation
+    const transformer = new Konva.Transformer({
+      rotateEnabled: true,
+      enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+      anchorStroke: '#93c5fd',
+      anchorFill: '#93c5fd',
+      anchorSize: 8,
+      borderStroke: '#93c5fd',
+      borderStrokeWidth: 1,
+      rotationSnaps: [0, 45, 90, 135, 180, 225, 270, 315],
+      rotationSnapTolerance: 5,
+      keepRatio: false,
+      shiftBehavior: 'none'
+    });
+    guideLayer.add(transformer);
+
+    // --- STATE MANAGEMENT ---
+    const $ = (sel) => document.querySelector(sel);
+    const statSeats = $('#statSeats');
+    const statTables = $('#statTables');
+    const statStations = $('#statStations');
+    const seatInput = $('#seatInput');
+    const labelInput = $('#labelInput');
+    const snapToggle = $('#snapToggle');
+    const gridToggle = $('#gridToggle');
+    const rotateEnable = $('#rotateEnable');
+    const rotationSnapToggle = $('#rotationSnapToggle');
+    const snapAngle = $('#snapAngle');
+    const zoomDisplay = $('#zoomDisplay');
+
+    let tables = 0, seats = 0, stations = 0;
+    function updateStats() {
+      statSeats.textContent = seats;
+      statTables.textContent = tables;
+      statStations.textContent = stations;
+    }
+
+    // --- ENHANCED OBJECT CREATION ---
+    function createObjectGroup(type, x, y, color) {
+      const group = new Konva.Group({
+        x, y,
+        draggable: true,
+        perfectDrawEnabled: false
+      });
+
+      let shape;
+      const common = {
+        fill: color,
+        shadowEnabled: false,
+        stroke: '#fff',
+        strokeWidth: 1,
+        listening: true
+      };
+
+      // Enhanced object shapes with better visuals
+      if(type === 'circle') {
+        shape = new Konva.Circle({ ...common, radius: 28 });
+        tables++; seats += Number(seatInput.value || 0);
+      } else if(type === 'square') {
+        shape = new Konva.Rect({ ...common, width: 60, height: 60, cornerRadius: 6, offset: {x:30,y:30} });
+        tables++; seats += Number(seatInput.value || 0);
+      } else if(type === 'rectangle') {
+        shape = new Konva.Rect({ ...common, width: 80, height: 50, cornerRadius: 6, offset: {x:40,y:25} });
+        tables++; seats += Number(seatInput.value || 0);
+      } else if(type === 'oval') {
+        shape = new Konva.Ellipse({ ...common, radiusX: 40, radiusY: 25 });
+        tables++; seats += Number(seatInput.value || 0);
+      } else if(type === 'chair') {
+        const seat = new Konva.Rect({ ...common, fill: '#4B5563', width: 26, height: 18, cornerRadius: 5, x: -13, y: 0 });
+        const back = new Konva.Rect({ ...common, fill: '#4B5563', width: 26, height: 12, cornerRadius: [5,5,0,0], x: -13, y: -12 });
+        group.add(seat, back);
+        group.offsetX(0);
+        group.offsetY(3);
+      } else if(type === 'sofa') {
+        const backLeft = new Konva.Rect({ x: -44, y: -19, width: 40, height: 38, fill: '#8B4513', cornerRadius: [8, 0, 0, 8] });
+        const backRight = new Konva.Rect({ x: 4, y: -19, width: 40, height: 38, fill: '#8B4513', cornerRadius: [0, 8, 8, 0] });
+        const cushionLeft = new Konva.Rect({ x: -40, y: 0, width: 36, height: 15, fill: '#DAA520', cornerRadius: 4 });
+        const cushionRight = new Konva.Rect({ x: 4, y: 0, width: 36, height: 15, fill: '#DAA520', cornerRadius: 4 });
+        const armLeft = new Konva.Rect({ x: -44, y: -19, width: 4, height: 38, fill: '#8B4513' });
+        const armRight = new Konva.Rect({ x: 40, y: -19, width: 4, height: 38, fill: '#8B4513' });
+        group.add(backLeft, backRight, cushionLeft, cushionRight, armLeft, armRight);
+        group.offsetX(0);
+        group.offsetY(0);
+      } else if(type === 'bar') {
+        shape = new Konva.Rect({ ...common, fill: '#06B6D4', width: 140, height: 28, cornerRadius: 14, offset: {x:70,y:14} });
+      } else if(type === 'servicestation' || type === 'preparea' || type === 'stagearea') {
+        stations++;
+        const stroke = (type === 'servicestation') ? 'rgba(34,197,94,.9)' :
+                      (type === 'preparea' ? 'rgba(249,115,22,.9)' : 'rgba(139,92,246,.9)');
+        shape = new Konva.Rect({
+          fill: 'transparent',
+          stroke,
+          strokeWidth: 2,
+          dash: [6,4],
+          width: 120,
+          height: 70,
+          offset: {x:60,y:35}
+        });
+      } else if(type === 'door') {
+        shape = new Konva.Rect({ ...common, width: 40, height: 4, offset: {x:20,y:2} });
+        const frame = new Konva.Rect({ fill: 'transparent', stroke: '#6B7280', strokeWidth: 2, width: 42, height: 80, offset: {x:21,y:40} });
+        group.add(shape, frame);
+      } else if(type === 'window') {
+        const frame = new Konva.Rect({ fill: 'rgba(59,130,246,0.1)', stroke: '#3B82F6', strokeWidth: 3, width: 80, height: 60, offset: {x:40,y:30} });
+        const glass = new Konva.Rect({ fill: 'rgba(219,234,254,0.3)', stroke: '#60A5FA', strokeWidth: 1, width: 70, height: 50, offset: {x:35,y:25} });
+        group.add(frame, glass);
+      } else if(type === 'column') {
+        shape = new Konva.Rect({ ...common, width: 20, height: 20, offset: {x:10,y:10} });
+      } else if(type === 'plant') {
+        const pot = new Konva.Circle({ fill: '#92400E', stroke: '#78350F', strokeWidth: 1, radius: 15 });
+        const leaves = new Konva.Circle({ fill: '#16A34A', radius: 25, y: -20 });
+        group.add(pot, leaves);
+        group.offsetY(15);
+      } else if(type === 'cashier') {
+        const base = new Konva.Rect({ ...common, width: 60, height: 30, cornerRadius: 4, offset: {x:30,y:15} });
+        const screen = new Konva.Rect({ fill: '#1F2937', width: 40, height: 25, cornerRadius: 2, offset: {x:20,y:12.5} });
+        const stand = new Konva.Rect({ fill: '#374151', width: 8, height: 15, x: -4, y: 15 });
+        group.add(base, screen, stand);
+      } else {
+        shape = new Konva.Rect({ ...common, width: 60, height: 40, cornerRadius: 4, offset: {x:30,y:20} });
+      }
+
+      const labelTxt = labelInput.value || type[0].toUpperCase() + type.slice(1);
+      const label = new Konva.Text({
+        text: labelTxt,
+        fontSize: 12,
+        fill: '#fff',
+        y: - (shape ? (type === 'oval' ? shape.radiusY() : shape.height()/2) : 19) - 16,
+        align: 'center',
+        listening: false
+      });
+      label.offsetX(label.width()/2);
+
+      const seatTxt = (type === 'circle' || type === 'square' || type === 'rectangle' || type === 'oval') ?
+        new Konva.Text({
+          text: `Seats: ${seatInput.value||0}`,
+          fontSize: 12,
+          fill: '#e5e7eb',
+          y: (shape ? (type === 'oval' ? shape.radiusY() : shape.height()/2) : 19) + 4,
+          listening: false
+        }) : null;
+      if(seatTxt) seatTxt.offsetX(seatTxt.width()/2);
+
+      if (shape) group.add(shape);
+      group.add(label);
+      if(seatTxt) group.add(seatTxt);
+
+      // Enhanced caching and event handling
+      group.cache({ pixelRatio: 1 });
+      group.on('dragstart transformstart', () => {
+        group.clearCache();
+        group.opacity(0.9);
+      });
+      group.on('dragmove', () => {
+        const p = group.position();
+        group.position({ x: snap(p.x), y: snap(p.y) });
+      });
+      group.on('dragend transformend', () => {
+        group.opacity(1);
+        group.cache({ pixelRatio: 1 });
+        worldLayer.batchDraw();
+        saveState();
+      });
+      group.on('mousedown', (e) => {
+        e.cancelBubble = true;
+        transformer.nodes([group]);
+        guideLayer.batchDraw();
+      });
+
+      world.add(group);
+      updateStats();
+      worldLayer.batchDraw();
+      saveState();
+      return group;
+    }
+
+    function createWallGroup(x, y) {
+      const group = new Konva.Group({ x, y, draggable: true });
+      const wall = new Konva.Line({
+        points: [-60, 0, 60, 0],
+        stroke: '#9CA3AF',
+        strokeWidth: 6,
+        lineCap: 'round',
+        lineJoin: 'round'
+      });
+      group.add(wall);
+      group.cache({ pixelRatio: 1 });
+      group.on('dragstart transformstart', () => {
+        group.clearCache();
+        group.opacity(0.9);
+      });
+      group.on('dragmove', () => {
+        const p = group.position();
+        group.position({ x: snap(p.x), y: snap(p.y) });
+      });
+      group.on('dragend transformend', () => {
+        group.opacity(1);
+        group.cache({ pixelRatio: 1 });
+        worldLayer.batchDraw();
+        saveState();
+      });
+      group.on('mousedown', (e) => {
+        e.cancelBubble = true;
+        transformer.nodes([group]);
+        guideLayer.batchDraw();
+      });
+      world.add(group);
+      worldLayer.batchDraw();
+      saveState();
+      return group;
+    }
+
+    // --- ENHANCED INTERACTION ---
+    stage.on('mousedown', (e) => {
+      if(isPanning || isSpacePressed) return;
+      if(e.target === stage || e.target.getParent() === bgLayer) {
+        const pointer = stage.getPointerPosition();
+        const worldPoint = {
+          x: (pointer.x - world.x()) / world.scaleX(),
+          y: (pointer.y - world.y()) / world.scaleY()
+        };
+        const snappedX = snap(worldPoint.x);
+        const snappedY = snap(worldPoint.y);
+
+        if(selectedType === 'wall') {
+          createWallGroup(snappedX, snappedY);
+        } else {
+          createObjectGroup(selectedType, snappedX, snappedY, selectedColor);
+        }
+
+        if (window.innerWidth <= 1024) {
+          document.getElementById('sidebar').classList.remove('open');
+        }
+      }
+    });
+
+    // --- ENHANCED ZOOM SYSTEM ---
+    let currentZoom = 1;
+    const MIN_ZOOM = 0.1;
+    const MAX_ZOOM = 5;
+
+    function updateZoomDisplay() {
+      zoomDisplay.textContent = Math.round(currentZoom * 100) + '%';
+    }
+
+    function setZoom(zoom, point = { x: stage.width()/2, y: stage.height()/2 }) {
+      const oldScale = world.scaleX();
+      const newScale = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom));
+
+      const mousePointTo = {
+        x: (point.x - world.x()) / oldScale,
+        y: (point.y - world.y()) / oldScale,
+      };
+
+      world.scale({ x: newScale, y: newScale });
+      currentZoom = newScale;
+
+      const newPos = {
+        x: point.x - mousePointTo.x * newScale,
+        y: point.y - mousePointTo.y * newScale
+      };
+      world.position(newPos);
+
+      worldLayer.batchDraw();
+      guideLayer.batchDraw();
+      drawGrid();
+      updateMinimap();
+      updateZoomDisplay();
+    }
+
+    function zoomToFit() {
+      const bounds = world.getClientRect();
+      const stageRect = stage.getClientRect();
+
+      if (bounds.width === 0 || bounds.height === 0) return;
+
+      const scaleX = (stageRect.width - 100) / bounds.width;
+      const scaleY = (stageRect.height - 100) / bounds.height;
+      const scale = Math.min(scaleX, scaleY, 1);
+
+      world.scale({ x: scale, y: scale });
+      currentZoom = scale;
+
+      const newPos = {
+        x: (stageRect.width - bounds.width * scale) / 2 - bounds.x * scale,
+        y: (stageRect.height - bounds.height * scale) / 2 - bounds.y * scale
+      };
+      world.position(newPos);
+
+      worldLayer.batchDraw();
+      guideLayer.batchDraw();
+      drawGrid();
+      updateMinimap();
+      updateZoomDisplay();
+    }
+
+    // Enhanced wheel zoom with better sensitivity
+    stage.on('wheel', (e) => {
+      e.evt.preventDefault();
+      const pointer = stage.getPointerPosition();
+      const zoomFactor = e.evt.deltaY > 0 ? 0.9 : 1.1;
+      setZoom(currentZoom * zoomFactor, pointer);
+    });
+
+    // --- TOOLS ---
+    function setPanMode(on) {
+      isPanning = on;
+      stage.container().style.cursor = on ? 'grab' : 'default';
+      world.draggable(on);
+    }
+
+    $('#handTool').onclick = () => {
+      setPanMode(true);
+      $('#handTool').classList.add('active');
+      $('#selectTool').classList.remove('active');
+    };
+
+    $('#selectTool').onclick = () => {
+      setPanMode(false);
+      $('#selectTool').classList.add('active');
+      $('#handTool').classList.remove('active');
+    };
+
+    $('#zoomToFit').onclick = () => {
+      zoomToFit();
+    };
+
+    // --- KEYBOARD SHORTCUTS ---
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !isSpacePressed) {
+        isSpacePressed = true;
+        stage.container().style.cursor = 'grab';
+        world.draggable(true);
+      }
+
+      // Tool shortcuts
+      if (e.code === 'KeyV' && !e.ctrlKey) {
+        e.preventDefault();
+        $('#selectTool').click();
+      }
+
+      // Delete
+      if (e.code === 'Delete' && transformer.nodes().length) {
+        e.preventDefault();
+        saveState();
+        transformer.nodes().forEach(node => {
+          if (node.className === 'Group') {
+            const shapeType = node.children[0].className;
+            if (shapeType === 'Circle' || shapeType === 'Rect' || shapeType === 'Ellipse') {
+              tables--;
+              seats -= Number(seatInput.value || 0);
+            } else if (shapeType === 'Rect' && node.children[0].fill() === 'transparent') {
+              stations--;
+            }
+            node.destroy();
+          }
+        });
+        transformer.nodes([]);
+        updateStats();
+        worldLayer.batchDraw();
+      }
+
+      // Undo/Redo
+      if (e.ctrlKey && e.code === 'KeyZ' && !e.shiftKey) {
+        e.preventDefault();
+        $('#undoBtn').click();
+      }
+      if ((e.ctrlKey && e.code === 'KeyY') || (e.ctrlKey && e.shiftKey && e.code === 'KeyZ')) {
+        e.preventDefault();
+        $('#redoBtn').click();
+      }
+
+      // Copy/Paste
+      if (e.ctrlKey && e.code === 'KeyC') {
+        e.preventDefault();
+        if (transformer.nodes().length) {
+          clipboard = transformer.nodes().map(node => ({
+            type: node.getAttr('type') || 'rect',
+            x: node.x(),
+            y: node.y(),
+            rotation: node.rotation(),
+            scaleX: node.scaleX(),
+            scaleY: node.scaleY(),
+            color: node.children[0].fill()
+          }));
+        }
+      }
+
+      if (e.ctrlKey && e.code === 'KeyV') {
+        e.preventDefault();
+        pasteObjects();
+      }
+
+      if (e.ctrlKey && e.code === 'KeyD') {
+        e.preventDefault();
+        duplicateObjects();
+      }
+
+      if (e.ctrlKey && e.code === 'KeyA') {
+        e.preventDefault();
+        selectAll();
+      }
+
+      // Zoom shortcuts
+      if (e.ctrlKey && e.code === 'Equal') {
+        e.preventDefault();
+        $('#zoomIn').click();
+      }
+      if (e.ctrlKey && e.code === 'Minus') {
+        e.preventDefault();
+        $('#zoomOut').click();
+      }
+      if (e.ctrlKey && e.code === 'Digit0') {
+        e.preventDefault();
+        $('#resetZoom').click();
+      }
+
+      // Escape to deselect
+      if (e.code === 'Escape') {
+        transformer.nodes([]);
+        guideLayer.batchDraw();
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' && isSpacePressed) {
+        isSpacePressed = false;
+        stage.container().style.cursor = 'default';
+        world.draggable(isPanning);
+      }
+    });
+
+    // --- ZOOM CONTROLS ---
+    $('#zoomIn').onclick = () => {
+      setZoom(currentZoom * 1.2);
+    };
+
+    $('#zoomOut').onclick = () => {
+      setZoom(currentZoom / 1.2);
+    };
+
+    $('#resetZoom').onclick = () => {
+      setZoom(1, { x: stage.width()/2, y: stage.height()/2 });
+    };
+
+    // --- UI CONTROLS ---
+    document.getElementById('palette').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-type]');
+      if(!btn) return;
+      document.querySelectorAll('#palette .object-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedType = btn.dataset.type;
+      if (window.innerWidth <= 1024) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    });
+
+    document.getElementById('colorRow').addEventListener('click', (e) => {
+      const c = e.target.closest('[data-color]');
+      if(!c) return;
+      selectedColor = c.dataset.color;
+    });
+
+    $('#toggleSidebar').onclick = () => {
+      document.getElementById('sidebar').classList.toggle('open');
+    };
+
+    $('#toggleCollapse').addEventListener('click', () => {
+      sidebarCollapsed = !sidebarCollapsed;
+      const sidebar = document.getElementById('sidebar');
+      const toggleIcon = document.getElementById('toggleCollapse').querySelector('i');
+
+      if (sidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        toggleIcon.classList.remove('fa-chevron-left');
+        toggleIcon.classList.add('fa-chevron-right');
+      } else {
+        sidebar.classList.remove('collapsed');
+        toggleIcon.classList.remove('fa-chevron-right');
+        toggleIcon.classList.add('fa-chevron-left');
+      }
+    });
+
+    rotateEnable.addEventListener('change', () => {
+      transformer.rotateEnabled(rotateEnable.checked);
+      guideLayer.batchDraw();
+    });
+
+    rotationSnapToggle.addEventListener('change', () => {
+      updateRotationSnaps();
+    });
+
+    snapAngle.addEventListener('change', () => {
+      updateRotationSnaps();
+    });
+
+    function updateRotationSnaps() {
+      if (rotationSnapToggle.checked) {
+        const angle = Number(snapAngle.value) || 45;
+        const snaps = [];
+        for (let i = 0; i < 360; i += angle) {
+          snaps.push(i);
+        }
+        transformer.rotationSnaps(snaps);
+      } else {
+        transformer.rotationSnaps([]);
+      }
+      guideLayer.batchDraw();
+    }
+
+    // Grid size controls
+    document.getElementById('gridSizeControls').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-size]');
+      if(!btn) return;
+      document.querySelectorAll('#gridSizeControls .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentGridSize = Number(btn.dataset.size);
+      drawGrid();
+    });
+
+    // --- COPY/PASTE/DUPLICATE ---
+    function pasteObjects() {
+      if (!clipboard.length) return;
+      saveState();
+      clipboard.forEach(obj => {
+        createObjectGroup(obj.type, obj.x + 30, obj.y + 30, obj.color);
+      });
+    }
+
+    function duplicateObjects() {
+      if (!transformer.nodes().length) return;
+      saveState();
+      const nodes = transformer.nodes();
+      nodes.forEach(node => {
+        const newNode = createObjectGroup(
+          node.getAttr('type') || 'rect',
+          node.x() + 30,
+          node.y() + 30,
+          node.children[0].fill()
+        );
+        newNode.rotation(node.rotation());
+        newNode.scale({ x: node.scaleX(), y: node.scaleY() });
+      });
+    }
+
+    function selectAll() {
+      const allGroups = world.children;
+      if (allGroups.length) {
+        transformer.nodes(allGroups);
+        guideLayer.batchDraw();
+      }
+    }
+
+    // --- ALIGNMENT TOOLS ---
+    function alignObjects(alignment) {
+      if (!transformer.nodes().length) return;
+      saveState();
+      const nodes = transformer.nodes();
+      if (nodes.length < 2) return;
+
+      const bounds = nodes.map(node => node.getClientRect());
+      let targetValue;
+
+      switch (alignment) {
+        case 'left':
+          targetValue = Math.min(...bounds.map(b => b.x));
+          nodes.forEach(node => node.x(targetValue));
+          break;
+        case 'right':
+          targetValue = Math.max(...bounds.map(b => b.x + b.width));
+          nodes.forEach(node => node.x(targetValue - bounds[nodes.indexOf(node)].width));
+          break;
+        case 'top':
+          targetValue = Math.min(...bounds.map(b => b.y));
+          nodes.forEach(node => node.y(targetValue));
+          break;
+        case 'bottom':
+          targetValue = Math.max(...bounds.map(b => b.y + b.height));
+          nodes.forEach(node => node.y(targetValue - bounds[nodes.indexOf(node)].height));
+          break;
+      }
+
+      worldLayer.batchDraw();
+    }
+
+    // --- ENHANCED MINIMAP ---
+    function updateMinimap() {
+      const minimap = $('#minimap');
+      const viewport = $('#minimapViewport');
+
+      if (!minimap || !viewport) return;
+
+      const scaleX = minimap.clientWidth / WORLD_SIZE;
+      const scaleY = minimap.clientHeight / WORLD_SIZE;
+
+      viewport.style.width = `${stage.width() / world.scaleX() * scaleX}px`;
+      viewport.style.height = `${stage.height() / world.scaleY() * scaleY}px`;
+      viewport.style.left = `${(-world.x() / world.scaleX() / WORLD_SIZE * minimap.clientWidth) + (minimap.clientWidth / 2)}px`;
+      viewport.style.top = `${(-world.y() / world.scaleY() / WORLD_SIZE * minimap.clientHeight) + (minimap.clientHeight / 2)}px`;
+    }
+
+    // --- SERIALIZATION ---
+    function saveState() {
+      redoStack = [];
+      undoStack.push(serialize());
+    }
+
+    function serialize() {
+      return world.children.map(child => {
+        if (child.className === 'Group') {
+          const k = child.children[0];
+          const childType = k.className.toLowerCase();
+          if (childType === 'line') {
+            return {
+              type: 'wall',
+              x: child.x(), y: child.y(), rotation: child.rotation(), scaleX: child.scaleX(), scaleY: child.scaleY(),
+              points: k.points(),
+              stroke: k.stroke(),
+              strokeWidth: k.strokeWidth()
+            };
+          } else {
+            return {
+              x: child.x(), y: child.y(), scaleX: child.scaleX(), scaleY: child.scaleY(), rotation: child.rotation(),
+              type: child.getAttr('type') || childType || 'rect', color: k.fill(), label: child.children[1]?.text()
+            };
+          }
+        }
+      }).filter(Boolean);
+    }
+
+    function deserialize(arr) {
+      world.destroyChildren();
+      tables = 0; seats = 0; stations = 0;
+      arr.forEach(a => {
+        if (a.type === 'wall') {
+          const group = new Konva.Group({ x: a.x, y: a.y, rotation: a.rotation || 0, scaleX: a.scaleX || 1, scaleY: a.scaleY || 1, draggable: true });
+          const wall = new Konva.Line({
+            points: a.points,
+            stroke: a.stroke,
+            strokeWidth: a.strokeWidth,
+            lineCap: 'round', lineJoin: 'round'
+          });
+          group.add(wall);
+          group.cache({ pixelRatio: 1 });
+          group.on('dragstart transformstart', () => { group.clearCache(); group.opacity(0.9); });
+          group.on('dragmove', () => { const p = group.position(); group.position({ x: snap(p.x), y: snap(p.y) }); });
+          group.on('dragend transformend', () => { group.opacity(1); group.cache({ pixelRatio: 1 }); worldLayer.batchDraw(); });
+          group.on('mousedown', (e) => { e.cancelBubble = true; transformer.nodes([group]); guideLayer.batchDraw(); });
+          world.add(group);
+        } else {
+          const typeMap = { circle: 'circle', rect: 'rectangle', ellipse: 'oval' };
+          const g = createObjectGroup(typeMap[a.type] || a.type, a.x, a.y, a.color || selectedColor);
+          g.rotation(a.rotation || 0);
+          g.scale({ x: a.scaleX || 1, y: a.scaleY || 1 });
+        }
+      });
+      worldLayer.batchDraw();
+      updateStats();
+    }
+
+    // --- FILE OPERATIONS ---
+    $('#saveBtn').onclick = () => {
+      localStorage.setItem('avelaLayout', JSON.stringify(serialize()));
+      toast('Layout saved successfully!');
+    };
+
+    $('#loadBtn').onclick = () => {
+      const raw = localStorage.getItem('avelaLayout');
+      if (!raw) return toast('No saved layout found');
+      const data = JSON.parse(raw);
+      deserialize(data);
+      toast('Layout loaded successfully!');
+    };
+
+    $('#exportBtn').onclick = () => {
+      let wasVisible = bgLayer.visible();
+      bgLayer.hide();
+      const uri = stage.toDataURL({ pixelRatio: 2 });
+      bgLayer.visible(wasVisible);
+      const a = document.createElement('a');
+      a.download = 'avela-layout.png';
+      a.href = uri;
+      a.click();
+      toast('Layout exported as PNG!');
+    };
+
+    $('#clearBtn').onclick = () => {
+      if (!confirm('Are you sure you want to clear the entire design? This action cannot be undone.')) return;
+      saveState();
+      world.destroyChildren();
+      tables = 0; seats = 0; stations = 0;
+      updateStats();
+      worldLayer.batchDraw();
+      toast('Layout cleared');
+    };
+
+    $('#undoBtn').onclick = () => {
+      if (undoStack.length === 0) return toast('Nothing to undo');
+      redoStack.push(serialize());
+      const state = undoStack.pop();
+      deserialize(state);
+      toast('Undo successful');
+    };
+
+    $('#redoBtn').onclick = () => {
+      if (redoStack.length === 0) return toast('Nothing to redo');
+      undoStack.push(serialize());
+      const state = redoStack.pop();
+      deserialize(state);
+      toast('Redo successful');
+    };
+
+    // --- ADDITIONAL TOOLS ---
+    $('#copyBtn').onclick = () => {
+      if (transformer.nodes().length) {
+        clipboard = transformer.nodes().map(node => ({
+          type: node.getAttr('type') || 'rect',
+          x: node.x(),
+          y: node.y(),
+          rotation: node.rotation(),
+          scaleX: node.scaleX(),
+          scaleY: node.scaleY(),
+          color: node.children[0].fill()
+        }));
+        toast('Objects copied to clipboard');
+      }
+    };
+
+    $('#pasteBtn').onclick = () => {
+      pasteObjects();
+      toast('Objects pasted');
+    };
+
+    $('#duplicateBtn').onclick = () => {
+      duplicateObjects();
+      toast('Objects duplicated');
+    };
+
+    $('#layersBtn').onclick = () => {
+      const panel = $('#layersPanel');
+      panel.classList.toggle('open');
+    };
+
+    // Alignment buttons
+    $('#alignLeftBtn').onclick = () => alignObjects('left');
+    $('#alignRightBtn').onclick = () => alignObjects('right');
+    $('#alignTopBtn').onclick = () => alignObjects('top');
+    $('#alignBottomBtn').onclick = () => alignObjects('bottom');
+
+    $('#shortcutsBtn').onclick = () => {
+      const modal = $('#shortcutsModal');
+      modal.classList.toggle('open');
+    };
+
+    // --- TOOLTIP SYSTEM ---
+    function showTooltip(text, x, y) {
+      const tooltip = $('#tooltip');
+      tooltip.textContent = text;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+      tooltip.classList.add('show');
+    }
+
+    function hideTooltip() {
+      $('#tooltip').classList.remove('show');
+    }
+
+    // Add tooltips to buttons
+    document.querySelectorAll('[title]').forEach(el => {
+      el.addEventListener('mouseenter', (e) => {
+        showTooltip(e.target.title, e.pageX + 10, e.pageY + 10);
+      });
+      el.addEventListener('mouseleave', hideTooltip);
+    });
+
+    // --- HELPER FUNCTIONS ---
+    function snap(v) {
+      return snapToggle.checked ? Math.round(v / currentGridSize) * currentGridSize : v;
+    }
+
+    function toast(msg) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 border border-gray-600 px-4 py-2 rounded-lg z-50 fade-in';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2000);
+    }
+
+    // --- INITIALIZATION ---
+    window.addEventListener('resize', () => {
+      sizeStageToContainer();
+    });
+
+    sizeStageToContainer();
+    updateRotationSnaps();
+    updateZoomDisplay();
+    updateLoadProgress(100);
+
+    gridToggle.addEventListener('change', () => {
+      drawGrid();
+    });
+
+    world.on('dragmove', () => {
+      drawGrid();
+      updateMinimap();
+    });
+
+    // Initial snaps
+    updateRotationSnaps();
+
+    // Close modals when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.keyboard-shortcuts') && !e.target.closest('#shortcutsBtn')) {
+        $('#shortcutsModal').classList.remove('open');
+      }
+      if (!e.target.closest('.layers-panel') && !e.target.closest('#layersBtn')) {
+        $('#layersPanel').classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>
